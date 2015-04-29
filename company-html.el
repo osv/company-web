@@ -119,8 +119,8 @@ DOCUMENTATION is string or function."
                               'annotation annotation
                               'doc (replace-regexp-in-string "\\\\n" "\n"
                                                              (match-string 2 item)))
-                  (propertize item
-                              'annotation annotation)))
+                (propertize item
+                            'annotation annotation)))
             items)))
 
 ;; candidate getters
@@ -132,11 +132,26 @@ DOCUMENTATION is string or function."
               (company-web-load-list-from-file (cdr source-name-and-file-path))))
            (company-web-all-files-named "html-tag-list"))))
 
+(defun company-web-candidates-attribute (tag)
+  "Attribute candidates of TAG."
+  (let* ((items (mapcar (lambda (plist-framwork-and-file)
+                          (company-web-make-candidate
+                           (concat (car plist-framwork-and-file) ", G")
+                           (company-web-load-list-from-file (cdr plist-framwork-and-file))))
+                        (company-web-all-files-named "html-attributes-list/global"))))
+    (add-to-list 'items
+                 (mapcar (lambda (plist-framwork-and-file)
+                           (company-web-make-candidate
+                            (car plist-framwork-and-file)
+                            (company-web-load-list-from-file (cdr plist-framwork-and-file))))
+                         (company-web-all-files-named (concat "html-attributes-list/" tag))))
+    (company-web-flatten items)))
+
 (defun company-web-annotation (candidate)
   "Return type annotation for chosen CANDIDATE."
   (concat
    (unless company-tooltip-align-annotations " -> ")
-   (get-text-property 0 'annotation candidate))))
+   (get-text-property 0 'annotation candidate)))
 
 (defun company-web-doc (doc-dir candidate)
   "Return documentation for chosen CANDIDATE.
@@ -148,24 +163,40 @@ Property of doc CANDIDATE or load file from `DOC-DIR/CANDIDATE'"
     (when doc
       (company-doc-buffer doc))))
 
+(defun company-web/current-html-tag ()
+  "Return current html tag user is typing on."
+  (save-excursion
+    (re-search-backward "<\\(\\w+\\)[[:space:]]+" nil t)
+    (match-string 1)))
+
 (defconst company-web/html-tag-regexp
-  (concat "<[[:space:]]*\\(\\(\\sw\\|\\s_\\)*\\)")
+  (concat "<[[:space:]]*\\(\\w*\\)")
   "A regular expression matching HTML tags.")
 
+(defconst company-web/html-attribute-regexp
+  (concat "<\\w+[[:space:]]+\\(\\w*\\)")
+  "A regular expression matching HTML attribute.")
+
 ;;;###autoload
-(defun company-web (command &optional arg &rest ignored)
+(defun company-web-html (command &optional arg &rest ignored)
   "`company-mode' completion back-end for `html-mode' and `web-mode'."
   (interactive (list 'interactive))
+;;  (message "start %S %S" command arg)
   (cl-case command
-    (interactive (company-begin-backend 'company-web))
+    (interactive (company-begin-backend 'company-web-html))
     (prefix (and (or (derived-mode-p 'html-mode)
                      (derived-mode-p 'web-mode))
-                 (or (company-grab company-web/html-tag-regexp 1))))
+                 (or (company-grab company-web/html-attribute-regexp 1)
+                     (company-grab company-web/html-tag-regexp 1)
+                     )))
     (candidates
      (cond
-      (;; tag
-       (and (not (company-web-is-point-in-string-face))
+      ;; tag
+      ((and (not (company-web-is-point-in-string-face))
             (company-grab company-web/html-tag-regexp 1))
-       (all-completions arg (company-web-candidates-tags)))))
+       (all-completions arg (company-web-candidates-tags)))
+      ((and (not (company-web-is-point-in-string-face))
+            (company-grab company-web/html-attribute-regexp 1))
+       (all-completions arg (company-web-candidates-attribute (company-web/current-html-tag))))))
     (annotation (company-web-annotation arg))
     (doc-buffer (company-web-doc "html-tag-short-docs" arg))))
