@@ -153,13 +153,31 @@ DOCUMENTATION is string or function."
    (unless company-tooltip-align-annotations " -> ")
    (get-text-property 0 'annotation candidate)))
 
-(defun company-web-doc (doc-dir candidate)
+(defun company-web-tag-doc (candidate)
   "Return documentation for chosen CANDIDATE.
-Property of doc CANDIDATE or load file from `DOC-DIR/CANDIDATE'"
+Property of doc CANDIDATE or load file from `html-tag-short-docs/CANDIDATE'"
   (let ((doc (get-text-property 0 'doc candidate)))
     (unless doc
-      (let ((doc-file (cdr (car (company-web-all-files-named (concat doc-dir "/" candidate))))))
-        (setq doc (company-web-read-file doc-file))))
+      (let ((doc-file (cdr (car (company-web-all-files-named (concat "html-tag-short-docs/" candidate))))))
+        (when doc-file
+          (setq doc (company-web-read-file doc-file)))))
+    (when doc
+      (company-doc-buffer doc))))
+
+
+(defun company-web-attribute-doc (tag candidate)
+  "Return documentation for chosen CANDIDATE.
+Property of doc CANDIDATE or load file from `html-attributes-short-docs/global-CANDIDATE' or
+`html-attributes-short-docs/TAG-CANDIDATE'"
+  (let ((doc (get-text-property 0 'doc candidate)))
+    (unless doc
+      (let ((doc-file (cdr (car (company-web-all-files-named (concat "html-attributes-short-docs/" tag "-" candidate))))))
+        (when doc-file
+          (setq doc (company-web-read-file doc-file)))))
+    (unless doc
+      (let ((doc-file (cdr (car (company-web-all-files-named (concat "html-attributes-short-docs/global-" candidate))))))
+        (when doc-file
+          (setq doc (company-web-read-file doc-file)))))
     (when doc
       (company-doc-buffer doc))))
 
@@ -195,8 +213,15 @@ Property of doc CANDIDATE or load file from `DOC-DIR/CANDIDATE'"
       ((and (not (company-web-is-point-in-string-face))
             (company-grab company-web/html-tag-regexp 1))
        (all-completions arg (company-web-candidates-tags)))
+      ;; attr
       ((and (not (company-web-is-point-in-string-face))
             (company-grab company-web/html-attribute-regexp 1))
        (all-completions arg (company-web-candidates-attribute (company-web/current-html-tag))))))
     (annotation (company-web-annotation arg))
-    (doc-buffer (company-web-doc "html-tag-short-docs" arg))))
+    (doc-buffer
+     (cond
+      ;; tag
+      ((company-grab company-web/html-tag-regexp 1)
+       (company-web-tag-doc arg))
+      ((company-grab company-web/html-attribute-regexp 1)
+       (company-web-attribute-doc (company-web/current-html-tag) arg))))))
