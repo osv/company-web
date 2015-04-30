@@ -38,6 +38,11 @@
   :type 'integer
   :group 'company-web)
 
+(defcustom company-web-complete-css t
+  "Enable `style' attribute CSS autocomplete."
+  :group 'company-web
+  :type 'boolean)
+
 (defvar company-web-string-check-faces '(font-lock-string-face web-mode-html-attr-value-face)
   "List of string faces to check.")
 
@@ -93,13 +98,6 @@ Returns an alist. car is source name, cdr is the file path."
           ac-html-source-dirs)
     return-files))
 
-(defun company-web-flatten (wtf)
-  "Flatten WTF, into a list."
-  (cond ((null wtf) nil)
-        ((atom wtf) (list wtf))
-        (t (append (company-web-flatten (car wtf))
-                   (company-web-flatten (cdr wtf))))))
-
 (defun company-web-make-candidate (framework-name items)
   "Make popup-item for each item with FRAMEWORK-NAME.
 
@@ -125,10 +123,10 @@ DOCUMENTATION is string or function."
 
 ;; candidate getters
 (defun company-web-candidates-tags ()
-  (company-web-flatten
+  (-flatten
    (mapcar (lambda (source-name-and-file-path)
              (company-web-make-candidate
-              (car source-name-and-file-path)
+              (concat (car source-name-and-file-path) ", tag")
               (company-web-load-list-from-file (cdr source-name-and-file-path))))
            (company-web-all-files-named "html-tag-list"))))
 
@@ -136,7 +134,7 @@ DOCUMENTATION is string or function."
   "Attribute candidates of TAG."
   (let* ((items (mapcar (lambda (plist-framwork-and-file)
                           (company-web-make-candidate
-                           (concat (car plist-framwork-and-file) ", G")
+                           (concat (car plist-framwork-and-file) ", G" " <" tag)
                            (company-web-load-list-from-file (cdr plist-framwork-and-file))))
                         (company-web-all-files-named "html-attributes-list/global"))))
     (add-to-list 'items
@@ -145,7 +143,32 @@ DOCUMENTATION is string or function."
                             (car plist-framwork-and-file)
                             (company-web-load-list-from-file (cdr plist-framwork-and-file))))
                          (company-web-all-files-named (concat "html-attributes-list/" tag))))
-    (company-web-flatten items)))
+    (-flatten items)))
+
+(defun company-web-candidates-attrib-values-internal (tag attribute)
+  "Attribute candidates for TAG and ATTRIBUTE."
+  (let* ((items (mapcar (lambda (plist-framwork-and-file)
+                          (company-web-make-candidate
+                           (car plist-framwork-and-file)
+                           (company-web-load-list-from-file (cdr plist-framwork-and-file))))
+                        (company-web-all-files-named (format "html-attributes-complete/%s-%s" tag attribute)))))
+    (add-to-list 'items
+                 (mapcar (lambda (plist-framwork-and-file)
+                           (company-web-make-candidate
+                            (concat (car plist-framwork-and-file) ", G" " <" tag ", " attribute)
+                            (company-web-load-list-from-file (cdr plist-framwork-and-file))))
+                         (company-web-all-files-named (concat "html-attributes-complete/global-" attribute))))
+    (-flatten items)))
+
+(defun company-web-candidates-attrib-values (tag attribute)
+  (if (and ac-html-complete-css
+           (string= attribute "style")
+           (< ;; make sure that quote openned before ac-css-prefix
+            (1+ (save-excursion (re-search-backward "\"" nil t)))
+            (or (ac-css-prefix) 0)))
+      (-flatten (company-web-make-candidate "CSS" (company-css-property-values
+                                                   (company-grab company-css-property-value-regexp 1))))
+    (company-web-candidates-attrib-values-internal tag attribute)))
 
 (defun company-web-annotation (candidate)
   "Return type annotation for chosen CANDIDATE."
@@ -181,47 +204,93 @@ Property of doc CANDIDATE or load file from `html-attributes-short-docs/global-C
     (when doc
       (company-doc-buffer doc))))
 
+
+(defconst company-web-selector "[[:alnum:]-]"
+  "Regexp of html attribute or tag")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; html
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defconst company-web/html-get-tag-re
+  (concat "<[[:space:]]*\\(" company-web-selector "+\\)[[:space:]]+")
+  "Regexp of html attribute or tag")
+
+(defconst company-web/html-get-attribute-re
+  (concat "[^[:alnum:]-]\\(" company-web-selector "+\\)=")
+  "Regexp of html attribute or tag")
+
 (defun company-web/current-html-tag ()
   "Return current html tag user is typing on."
   (save-excursion
-    (re-search-backward "<\\(\\w+\\)[[:space:]]+" nil t)
+    (re-search-backward company-web/html-get-tag-re nil t)
+    (match-string 1)))
+
+(defun company-web/current-html-attribute ()
+  "Return current html tag's attribute user is typing on."
+  (save-excursion
+    (re-search-backward company-web/html-get-attribute-re nil t)
     (match-string 1)))
 
 (defconst company-web/html-tag-regexp
-  (concat "<[[:space:]]*\\(\\w*\\)")
+  (concat "<[[:space:]]*\\("
+          company-web-selector
+          "*\\)")
   "A regular expression matching HTML tags.")
 
 (defconst company-web/html-attribute-regexp
-  (concat "<\\w+[[:space:]]+\\(\\w*\\)")
+  (concat "<[[:space:]]*" company-web-selector "[^>]*[[:space:]]+\\(.*\\)")
   "A regular expression matching HTML attribute.")
+
+(defconst company-web/html-value-regexp
+  (concat "\\w=[\"]\\([^\"]+[ ;:]\\|\\)"
+          "\\(" company-web-selector "*\\)")
+  "A regular expression matching HTML attribute.")
+
+(defun company-web-grab (regexp &optional expression limit)
+  (save-excursion
+  (when (looking-back regexp limit)
+    (or (match-string-no-properties (or expression 0)) ""))))
+
 
 ;;;###autoload
 (defun company-web-html (command &optional arg &rest ignored)
   "`company-mode' completion back-end for `html-mode' and `web-mode'."
   (interactive (list 'interactive))
-;;  (message "start %S %S" command arg)
   (cl-case command
     (interactive (company-begin-backend 'company-web-html))
+    (ignore-case t)
+    (duplicates nil)
     (prefix (and (or (derived-mode-p 'html-mode)
                      (derived-mode-p 'web-mode))
-                 (or (company-grab company-web/html-attribute-regexp 1)
+                 (or (company-grab company-web/html-value-regexp 2)
                      (company-grab company-web/html-tag-regexp 1)
+                     (company-grab company-web/html-attribute-regexp 1)
                      )))
     (candidates
      (cond
+      ;; value
+      ((company-grab company-web/html-value-regexp 2)
+       (message "!!VALUE of %s" arg)
+       (all-completions arg (company-web-candidates-attrib-values (company-web/current-html-tag)
+                                                           (company-web/current-html-attribute))))
       ;; tag
       ((and (not (company-web-is-point-in-string-face))
             (company-grab company-web/html-tag-regexp 1))
+       (message "!!TAG of %s" arg)
        (all-completions arg (company-web-candidates-tags)))
       ;; attr
       ((and (not (company-web-is-point-in-string-face))
             (company-grab company-web/html-attribute-regexp 1))
+       (message "!!ATTR of %s" arg)
        (all-completions arg (company-web-candidates-attribute (company-web/current-html-tag))))))
     (annotation (company-web-annotation arg))
     (doc-buffer
+     ;; No need grab for attribute value, attribute regexp will match enyway
      (cond
       ;; tag
       ((company-grab company-web/html-tag-regexp 1)
        (company-web-tag-doc arg))
+      ;; attr
       ((company-grab company-web/html-attribute-regexp 1)
        (company-web-attribute-doc (company-web/current-html-tag) arg))))))
