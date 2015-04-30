@@ -1,4 +1,4 @@
-;;; company-html.el --- Company version of ac-html, auto complete source for html tags and attributes
+;;; company-web.el --- Company version of ac-html, auto complete source for html tags and attributes
 
 ;; Copyright (C) 2015 Olexandr Sydorchuk
 
@@ -301,3 +301,6 @@ Property of doc CANDIDATE or load file from `html-attributes-short-docs/global-C
       ;; attr
       ((company-grab company-web/html-attribute-regexp 1)
        (company-web-attribute-doc (company-web/current-html-tag) arg))))))
+
+(provide 'company-web)
+;;; ac-html.el ends here
