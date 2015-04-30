@@ -33,6 +33,13 @@
 (require 'dash)
 (require 'cl)
 
+(require 'ac-html-complete-data)
+
+(defgroup company-web nil
+  "HTML Complete, Company back-end."
+  :group 'company
+  :prefix "company-web-")
+
 (defcustom company-web-framework-name-truncate-length 10
   "Truncation length for type framework-name"
   :type 'integer
