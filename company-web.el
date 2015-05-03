@@ -221,11 +221,11 @@ Property of doc CANDIDATE or load file from `html-attributes-short-docs/global-C
 
 (defconst company-web/html-get-tag-re
   (concat "<[[:space:]]*\\(" company-web-selector "+\\)[[:space:]]+")
-  "Regexp of html attribute or tag")
+  "Regexp of html tag")
 
 (defconst company-web/html-get-attribute-re
   (concat "[^[:alnum:]-]\\(" company-web-selector "+\\)=")
-  "Regexp of html attribute or tag")
+  "Regexp of html attribute")
 
 (defun company-web/current-html-tag ()
   "Return current html tag user is typing on."
