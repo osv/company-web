@@ -1,4 +1,4 @@
-;;; company-web.el --- Company version of ac-html, auto complete source for html tags and attributes
+;;; company-web.el --- Company version of ac-html, completion for web,html,jade modes
 
 ;; Copyright (C) 2015 Olexandr Sydorchuk
 
@@ -216,86 +216,5 @@ Property of doc CANDIDATE or load file from `html-attributes-short-docs/global-C
 (defconst company-web-selector "[[:alnum:]-]"
   "Regexp of html attribute or tag")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; html
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defconst company-web/html-get-tag-re
-  (concat "<[[:space:]]*\\(" company-web-selector "+\\)[[:space:]]+")
-  "Regexp of html tag")
-
-(defconst company-web/html-get-attribute-re
-  (concat "[^[:alnum:]-]\\(" company-web-selector "+\\)=")
-  "Regexp of html attribute")
-
-(defun company-web/current-html-tag ()
-  "Return current html tag user is typing on."
-  (save-excursion
-    (re-search-backward company-web/html-get-tag-re nil t)
-    (match-string 1)))
-
-(defun company-web/current-html-attribute ()
-  "Return current html tag's attribute user is typing on."
-  (save-excursion
-    (re-search-backward company-web/html-get-attribute-re nil t)
-    (match-string 1)))
-
-(defconst company-web/html-tag-regexp
-  (concat "<[[:space:]]*\\("
-          company-web-selector
-          "*\\)")
-  "A regular expression matching HTML tags.")
-
-(defconst company-web/html-attribute-regexp
-  (concat "<[[:space:]]*" company-web-selector "[^>]*[[:space:]]+\\(.*\\)")
-  "A regular expression matching HTML attribute.")
-
-(defconst company-web/html-value-regexp
-  (concat "\\w=[\"]\\([^\"]+[ ;:]\\|\\)"
-          "\\(" company-web-selector "*\\)")
-  "A regular expression matching HTML attribute.")
-
-;;;###autoload
-(defun company-web-html (command &optional arg &rest ignored)
-  "`company-mode' completion back-end for `html-mode' and `web-mode'."
-  (interactive (list 'interactive))
-  (cl-case command
-    (interactive (company-begin-backend 'company-web-html))
-    (ignore-case t)
-    (duplicates nil)
-    (prefix (and (or (derived-mode-p 'html-mode)
-                     (derived-mode-p 'web-mode))
-                 (or (company-grab company-web/html-value-regexp 2)
-                     (company-grab company-web/html-tag-regexp 1)
-                     (company-grab company-web/html-attribute-regexp 1)
-                     )))
-    (candidates
-     (cond
-      ;; value
-      ((company-grab company-web/html-value-regexp 2)
-       (message "!!VALUE of %s" arg)
-       (all-completions arg (company-web-candidates-attrib-values (company-web/current-html-tag)
-                                                           (company-web/current-html-attribute))))
-      ;; tag
-      ((and (not (company-web-is-point-in-string-face))
-            (company-grab company-web/html-tag-regexp 1))
-       (message "!!TAG of %s" arg)
-       (all-completions arg (company-web-candidates-tags)))
-      ;; attr
-      ((and (not (company-web-is-point-in-string-face))
-            (company-grab company-web/html-attribute-regexp 1))
-       (message "!!ATTR of %s" arg)
-       (all-completions arg (company-web-candidates-attribute (company-web/current-html-tag))))))
-    (annotation (company-web-annotation arg))
-    (doc-buffer
-     ;; No need grab for attribute value, attribute regexp will match enyway
-     (cond
-      ;; tag
-      ((company-grab company-web/html-tag-regexp 1)
-       (company-web-tag-doc arg))
-      ;; attr
-      ((company-grab company-web/html-attribute-regexp 1)
-       (company-web-attribute-doc (company-web/current-html-tag) arg))))))
-
 (provide 'company-web)
-;;; ac-html.el ends here
+;;; company-web.el ends here
