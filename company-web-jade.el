@@ -51,6 +51,8 @@
   (concat
    ;; tag or nil(div)
    "^ *\\(" company-web-selector "+\\|\\)"
+   ;; classes ?
+   "[.[:alnum:]-]*"
    ;; id?
    "#\\(" company-web-selector "*\\|\\)")
 
