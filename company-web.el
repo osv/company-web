@@ -40,8 +40,12 @@
 ;;   (add-hook 'web-mode-hook (lambda ()
 ;;                             (set (make-local-variable 'company-backends) '(company-web-html company-files))
 ;;                             (company-mode t)))
-
 ;;
+;; P.S: You may be interested in next packages:
+;;
+;; `ac-html-bootstrap' - Twitter:Bootstrap completion data for company-web (and ac-html as well)
+;; `ac-html-csswatcher' - Watch your project CSS/Less files for classes and ids
+
 ;;; Code:
 
 (require 'company)
