@@ -151,4 +151,5 @@ or
       ((company-grab company-web/slim-attribute-regexp 1)
        (company-web-attribute-doc (company-web/current-slim-tag) arg))))))
 
+(provide 'company-web-slim)
 ;;; company-web-slim.el ends here

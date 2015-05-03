@@ -149,4 +149,5 @@ or
       ((company-grab company-web/jade-attribute-regexp 1)
        (company-web-attribute-doc (company-web/current-jade-tag) arg))))))
 
+(provide 'company-web-jade)
 ;;; company-web-jade.el ends here

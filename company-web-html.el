@@ -99,4 +99,5 @@
       ((company-grab company-web/html-attribute-regexp 1)
        (company-web-attribute-doc (company-web/current-html-tag) arg))))))
 
+(provide 'company-web-html)
 ;;; company-web-html.el ends here
