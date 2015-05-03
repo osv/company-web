@@ -140,9 +140,9 @@ or
      ;; No need grab for attribute value, attribute regexp will match enyway
      (cond
       ((company-web-grab-not-in-string company-web/jade-div-id-regexp 1)
-       (company-web-tag-doc arg))
+       (company-web-candidate-prop-doc arg))
       ((company-web-grab-not-in-string company-web/jade-div-class-regexp 2)
-       (company-web-tag-doc arg))
+       (company-web-candidate-prop-doc arg))
       ;; tag
       ((company-grab company-web/jade-tag-regexp 1)
        (company-web-tag-doc arg))

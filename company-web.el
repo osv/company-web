@@ -1,4 +1,4 @@
-;;; company-web.el --- Company version of ac-html, completion for web,html,jade modes
+;;; company-web.el --- Company version of ac-html, completion for web,html,jade,slim modes
 
 ;; Copyright (C) 2015 Olexandr Sydorchuk
 
@@ -183,6 +183,11 @@ DOCUMENTATION is string or function."
   (concat
    (unless company-tooltip-align-annotations " -> ")
    (get-text-property 0 'annotation candidate)))
+
+(defun company-web-candidate-prop-doc (candidate)
+  "Return documentation for chosen CANDIDATE.
+Property of doc CANDIDATE"
+  (company-doc-buffer (get-text-property 0 'doc candidate)))
 
 (defun company-web-tag-doc (candidate)
   "Return documentation for chosen CANDIDATE.

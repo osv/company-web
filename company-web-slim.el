@@ -142,9 +142,9 @@ or
      ;; No need grab for attribute value, attribute regexp will match enyway
      (cond
       ((company-web-grab-not-in-string company-web/slim-id-regexp 1)
-       (company-web-tag-doc arg))
+       (company-web-candidate-prop-doc arg))
       ((company-web-grab-not-in-string company-web/slim-class-regexp 2)
-       (company-web-tag-doc arg))
+       (company-web-candidate-prop-doc arg))
       ;; tag
       ((company-grab company-web/slim-tag-regexp 1)
        (company-web-tag-doc arg))
