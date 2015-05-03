@@ -184,10 +184,29 @@ DOCUMENTATION is string or function."
    (unless company-tooltip-align-annotations " -> ")
    (get-text-property 0 'annotation candidate)))
 
+(defvar company-web-doc-font-lock-keywords
+  (list
+   '("<\\([[:alnum:]-]+\\)" 1 font-lock-function-name-face t)
+   '("</\\([[:alnum:]-]+\\)" 1 font-lock-function-name-face t)
+   '("\\(?:^\\| \\)\\.\\([[:alnum:]-]+\\)" 1 font-lock-type-face t)
+   '("\\([[:alnum:]-]+\\)=" 1 font-lock-type-face t)
+   '("^[A-Z][-_a-z ]+:" . font-lock-constant-face)))
+
+(defun company-web-doc-buffer (&optional string)
+  (with-current-buffer (get-buffer-create "*html-documentation*")
+    (set (make-local-variable 'font-lock-defaults)
+	 '(company-web-doc-font-lock-keywords))
+    (font-lock-mode t)
+    (erase-buffer)
+    (when string
+      (save-excursion
+        (insert string)))
+    (current-buffer)))
+
 (defun company-web-candidate-prop-doc (candidate)
   "Return documentation for chosen CANDIDATE.
 Property of doc CANDIDATE"
-  (company-doc-buffer (get-text-property 0 'doc candidate)))
+  (company-web-doc-buffer (get-text-property 0 'doc candidate)))
 
 (defun company-web-tag-doc (candidate)
   "Return documentation for chosen CANDIDATE.
@@ -198,7 +217,7 @@ Property of doc CANDIDATE or load file from `html-tag-short-docs/CANDIDATE'"
         (when doc-file
           (setq doc (company-web-read-file doc-file)))))
     (when doc
-      (company-doc-buffer doc))))
+      (company-web-doc-buffer doc))))
 
 
 (defun company-web-attribute-doc (tag candidate)
