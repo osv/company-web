@@ -23,9 +23,24 @@
 
 ;;; Commentary:
 
+;; Same as ac-html, but for `company' completion framework.
+
+;; Note: It require ac-html and `auto-complete' will be installed too,
+;; however it will be NOT required.
+
 ;; Configuration:
 ;;
-;; TODO: replace ac-html-source-dirs
+;;   (add-to-list 'company-backends 'company-web-html)
+;;   (add-to-list 'company-backends 'company-web-jade)
+;;   (add-to-list 'company-backends 'company-web-slim)
+;;
+;; or, for example, setup web-mode-hook:
+;;
+;;   (define-key web-mode-map (kbd "C-'") 'company-web-html)
+;;   (add-hook 'web-mode-hook (lambda ()
+;;                             (set (make-local-variable 'company-backends) '(company-web-html company-files))
+;;                             (company-mode t)))
+
 ;;
 ;;; Code:
 
