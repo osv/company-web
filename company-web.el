@@ -152,7 +152,7 @@ DOCUMENTATION is string or function."
   (-flatten
    (mapcar (lambda (source-name-and-file-path)
              (company-web-make-candidate
-              (concat (car source-name-and-file-path) ", tag")
+              (car source-name-and-file-path)
               (company-web-load-list-from-file (cdr source-name-and-file-path))))
            (company-web-all-files-named "html-tag-list"))))
 
@@ -161,7 +161,7 @@ DOCUMENTATION is string or function."
   (unless (string= "" tag)
     (let* ((items (mapcar (lambda (plist-framwork-and-file)
                             (company-web-make-candidate
-                             (concat (car plist-framwork-and-file) ", G" " <" tag)
+                             (concat (car plist-framwork-and-file) ", G")
                              (company-web-load-list-from-file (cdr plist-framwork-and-file))))
                           (company-web-all-files-named "html-attributes-list/global"))))
       (add-to-list 'items
@@ -182,7 +182,7 @@ DOCUMENTATION is string or function."
     (add-to-list 'items
                  (mapcar (lambda (plist-framwork-and-file)
                            (company-web-make-candidate
-                            (concat (car plist-framwork-and-file) ", G" " <" tag ", " attribute)
+                            (concat (car plist-framwork-and-file) ", G")
                             (company-web-load-list-from-file (cdr plist-framwork-and-file))))
                          (company-web-all-files-named (concat "html-attributes-complete/global-" attribute))))
     (-flatten items)))
