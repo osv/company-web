@@ -118,6 +118,12 @@ or
     (doc-buffer
      ;; No need grab for attribute value, attribute regexp will match enyway
      (cond
+      ((and (not (company-web-is-point-in-string-face))
+            (company-grab company-web/jade-div-id-regexp 1))
+       (company-web-tag-doc arg))
+      ((and (not (company-web-is-point-in-string-face))
+            (company-grab company-web/jade-div-class-regexp 1))
+       (company-web-tag-doc arg))
       ;; tag
       ((company-grab company-web/jade-tag-regexp 1)
        (company-web-tag-doc arg))
