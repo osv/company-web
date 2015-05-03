@@ -120,37 +120,30 @@ or
        (all-completions arg (company-web-candidates-attrib-values (company-web/current-slim-tag)
                                                            (company-web/current-slim-attribute))))
       ;; class ".foo" or id "#bar"
-      ((and (not (company-web-is-point-in-string-face))
-            (company-grab company-web/slim-id-regexp 1))
-       (let ((tag (company-grab company-web/slim-id-regexp 1)))
+      ((company-web-grab-not-in-string company-web/slim-id-regexp 1)
+      (let ((tag (company-grab company-web/slim-id-regexp 1)))
          (if (string= "" tag)
              (setq tag "div"))
          (all-completions arg (company-web-candidates-attrib-values tag "id"))))
 
-      ((and (not (company-web-is-point-in-string-face))
-            (company-grab company-web/slim-class-regexp 1))
+      ((company-web-grab-not-in-string company-web/slim-class-regexp 1)
        (let ((tag (company-grab company-web/slim-class-regexp 1)))
          (if (string= "" tag)
              (setq tag "div"))
          (all-completions arg (company-web-candidates-attrib-values tag "class"))))
-
       ;; tag
-      ((and (not (company-web-is-point-in-string-face))
-            (company-grab company-web/slim-tag-regexp 1))
+      ((company-web-grab-not-in-string company-web/slim-tag-regexp 1)
        (all-completions arg (company-web-candidates-tags)))
       ;; attr
-      ((and (not (company-web-is-point-in-string-face))
-            (company-grab company-web/slim-attribute-regexp 1))
+      ((company-web-grab-not-in-string company-web/slim-attribute-regexp 1)
        (all-completions arg (company-web-candidates-attribute (company-web/current-slim-tag))))))
     (annotation (company-web-annotation arg))
     (doc-buffer
      ;; No need grab for attribute value, attribute regexp will match enyway
      (cond
-      ((and (not (company-web-is-point-in-string-face))
-            (company-grab company-web/slim-id-regexp 1))
+      ((company-web-grab-not-in-string company-web/slim-id-regexp 1)
        (company-web-tag-doc arg))
-      ((and (not (company-web-is-point-in-string-face))
-            (company-grab company-web/slim-class-regexp 2))
+      ((company-web-grab-not-in-string company-web/slim-class-regexp 2)
        (company-web-tag-doc arg))
       ;; tag
       ((company-grab company-web/slim-tag-regexp 1)
