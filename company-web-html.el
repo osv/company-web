@@ -80,18 +80,13 @@
      (cond
       ;; value
       ((company-grab company-web/html-value-regexp 1)
-       (message "!!VALUE of %s" arg)
        (all-completions arg (company-web-candidates-attrib-values (company-web/current-html-tag)
                                                                   (company-web/current-html-attribute))))
       ;; tag
-      ((and (not (company-web-is-point-in-string-face))
-            (company-grab company-web/html-tag-regexp 1))
-       (message "!!TAG of %s" arg)
+      ((company-web-grab-not-in-string company-web/html-tag-regexp 1)
        (all-completions arg (company-web-candidates-tags)))
       ;; attr
-      ((and (not (company-web-is-point-in-string-face))
-            (company-grab company-web/html-attribute-regexp 1))
-       (message "!!ATTR of %s" arg)
+      ((company-web-grab-not-in-string company-web/html-attribute-regexp 1)
        (all-completions arg (company-web-candidates-attribute (company-web/current-html-tag))))))
     (annotation (company-web-annotation arg))
     (doc-buffer
