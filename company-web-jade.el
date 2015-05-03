@@ -121,30 +121,25 @@ or
              (setq tag "div"))
          (all-completions arg (company-web-candidates-attrib-values tag "id"))))
 
-      ((and (not (company-web-is-point-in-string-face))
-            (company-grab company-web/jade-class-regexp 1))
+      ((company-web-grab-not-in-string company-web/jade-class-regexp 1)
        (let ((tag (company-grab company-web/jade-class-regexp 1)))
          (if (string= "" tag)
              (setq tag "div"))
          (all-completions arg (company-web-candidates-attrib-values tag "class"))))
 
       ;; tag
-      ((and (not (company-web-is-point-in-string-face))
-            (company-grab company-web/jade-tag-regexp 1))
+      ((company-web-grab-not-in-string company-web/jade-tag-regexp 1)
        (all-completions arg (company-web-candidates-tags)))
       ;; attr
-      ((and (not (company-web-is-point-in-string-face))
-            (company-grab company-web/jade-attribute-regexp 1))
+      ((company-web-grab-not-in-string company-web/jade-attribute-regexp 1)
        (all-completions arg (company-web-candidates-attribute (company-web/current-jade-tag))))))
     (annotation (company-web-annotation arg))
     (doc-buffer
      ;; No need grab for attribute value, attribute regexp will match enyway
      (cond
-      ((and (not (company-web-is-point-in-string-face))
-            (company-grab company-web/jade-div-id-regexp 1))
+      ((company-web-grab-not-in-string company-web/jade-div-id-regexp 1)
        (company-web-tag-doc arg))
-      ((and (not (company-web-is-point-in-string-face))
-            (company-grab company-web/jade-div-class-regexp 2))
+      ((company-web-grab-not-in-string company-web/jade-div-class-regexp 2)
        (company-web-tag-doc arg))
       ;; tag
       ((company-grab company-web/jade-tag-regexp 1)
