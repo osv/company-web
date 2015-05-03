@@ -58,7 +58,7 @@
   "A regular expression matching HTML attribute.")
 
 (defconst company-web/html-value-regexp
-  (concat "\\w=[\"]\\([^\"]+[ ;:]\\|\\)"
+  (concat "\\w=[\"]\\(?:[^\"]+[ ;:]\\|\\)"
           "\\(" company-web-selector "*\\)")
   "A regular expression matching HTML attribute.")
 
@@ -72,14 +72,14 @@
     (duplicates nil)
     (prefix (and (or (derived-mode-p 'html-mode)
                      (derived-mode-p 'web-mode))
-                 (or (company-grab company-web/html-value-regexp 2)
+                 (or (company-grab company-web/html-value-regexp 1)
                      (company-grab company-web/html-tag-regexp 1)
                      (company-grab company-web/html-attribute-regexp 1)
                      )))
     (candidates
      (cond
       ;; value
-      ((company-grab company-web/html-value-regexp 2)
+      ((company-grab company-web/html-value-regexp 1)
        (message "!!VALUE of %s" arg)
        (all-completions arg (company-web-candidates-attrib-values (company-web/current-html-tag)
                                                                   (company-web/current-html-attribute))))
