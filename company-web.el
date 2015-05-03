@@ -139,18 +139,19 @@ DOCUMENTATION is string or function."
 
 (defun company-web-candidates-attribute (tag)
   "Attribute candidates of TAG."
-  (let* ((items (mapcar (lambda (plist-framwork-and-file)
-                          (company-web-make-candidate
-                           (concat (car plist-framwork-and-file) ", G" " <" tag)
-                           (company-web-load-list-from-file (cdr plist-framwork-and-file))))
-                        (company-web-all-files-named "html-attributes-list/global"))))
-    (add-to-list 'items
-                 (mapcar (lambda (plist-framwork-and-file)
-                           (company-web-make-candidate
-                            (car plist-framwork-and-file)
-                            (company-web-load-list-from-file (cdr plist-framwork-and-file))))
-                         (company-web-all-files-named (concat "html-attributes-list/" tag))))
-    (-flatten items)))
+  (unless (string= "" tag)
+    (let* ((items (mapcar (lambda (plist-framwork-and-file)
+                            (company-web-make-candidate
+                             (concat (car plist-framwork-and-file) ", G" " <" tag)
+                             (company-web-load-list-from-file (cdr plist-framwork-and-file))))
+                          (company-web-all-files-named "html-attributes-list/global"))))
+      (add-to-list 'items
+                   (mapcar (lambda (plist-framwork-and-file)
+                             (company-web-make-candidate
+                              (car plist-framwork-and-file)
+                              (company-web-load-list-from-file (cdr plist-framwork-and-file))))
+                           (company-web-all-files-named (concat "html-attributes-list/" tag))))
+      (-flatten items))))
 
 (defun company-web-candidates-attrib-values-internal (tag attribute)
   "Attribute candidates for TAG and ATTRIBUTE."
