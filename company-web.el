@@ -254,12 +254,6 @@ Property of doc CANDIDATE or load file from `html-attributes-short-docs/global-C
           "\\(" company-web-selector "*\\)")
   "A regular expression matching HTML attribute.")
 
-(defun company-web-grab (regexp &optional expression limit)
-  (save-excursion
-  (when (looking-back regexp limit)
-    (or (match-string-no-properties (or expression 0)) ""))))
-
-
 ;;;###autoload
 (defun company-web-html (command &optional arg &rest ignored)
   "`company-mode' completion back-end for `html-mode' and `web-mode'."
