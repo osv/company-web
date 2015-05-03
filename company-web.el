@@ -212,6 +212,10 @@ Property of doc CANDIDATE or load file from `html-attributes-short-docs/global-C
     (when doc
       (company-doc-buffer doc))))
 
+(defun company-web-grab-not-in-string (regexp expression)
+  "Like `company-grab' but not in string"
+  (and (not (company-web-is-point-in-string-face))
+       (company-grab regexp expression)))
 
 (defconst company-web-selector "[[:alnum:]-]"
   "Regexp of html attribute or tag")
