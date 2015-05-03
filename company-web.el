@@ -1,4 +1,4 @@
-;;; company-web.el --- Company version of ac-html, completion for web,html,jade,slim modes
+;;; company-web.el --- Company version of ac-html, complete for web,html,jade,slim modes
 
 ;; Copyright (C) 2015 Olexandr Sydorchuk
 
