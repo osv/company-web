@@ -137,11 +137,10 @@ or
        (all-completions arg (company-web-candidates-attribute (company-web/current-jade-tag))))))
     (annotation (company-web-annotation arg))
     (doc-buffer
-     ;; No need grab for attribute value, attribute regexp will match enyway
      (cond
-      ((company-web-grab-not-in-string company-web/jade-div-id-regexp 1)
-       (company-web-candidate-prop-doc arg))
-      ((company-web-grab-not-in-string company-web/jade-div-class-regexp 2)
+      ((or (company-web-grab-not-in-string company-web/jade-id-regexp 1)
+	   (company-web-grab-not-in-string company-web/jade-class-regexp 2)
+	   (company-grab company-web/jade-value-regexp 1))
        (company-web-candidate-prop-doc arg))
       ;; tag
       ((company-grab company-web/jade-tag-regexp 1)
