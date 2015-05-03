@@ -249,7 +249,7 @@ Property of doc CANDIDATE or load file from `html-attributes-short-docs/global-C
         (when doc-file
           (setq doc (company-web-read-file doc-file)))))
     (when doc
-      (company-doc-buffer doc))))
+      (company-web-doc-buffer doc))))
 
 (defun company-web-grab-not-in-string (regexp expression)
   "Like `company-grab' but not in string"
