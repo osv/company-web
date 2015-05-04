@@ -5,7 +5,7 @@
 ;; Author: Olexandr Sydorchuk <olexandr.syd@gmail.com>
 ;; Version: 0.3
 ;; Keywords: html, company
-;; Package-Requires: ((company "0.8.0") (dash "2.8.0") (cl-lib "0.5.0") (ac-html "0.3.0"))
+;; Package-Requires: ((company "0.8.0") (dash "2.8.0") (cl-lib "0.5.0") (web-completion-data "0.1.0"))
 ;; URL: https://github.com/osv/company-web
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -48,6 +48,7 @@
 
 ;;; Code:
 
+(require 'web-completion-data)
 (require 'company)
 (require 'dash)
 (require 'cl)
@@ -92,7 +93,7 @@
       (memq faces company-web-string-check-faces))))
 
 (defun company-web-read-file (file-in-source-dir)
-  "Return string content of FILE-IN-SOURCE-DIR from `ac-html-source-dirs'."
+  "Return string content of FILE-IN-SOURCE-DIR from `web-completion-data-sources'."
   (let ((file (cdr (nth 0 (company-web-all-files-named file-in-source-dir)))))
     ;; Just read from the first file.
     (when file
@@ -102,7 +103,7 @@
 
 (defun company-web-all-files-named (file-name)
   "Get a list of file named FILE-NAME in all directory specified by
- `ac-html-source-dirs'.
+ `web-completion-data-sources'.
 
 Returns an alist. car is source name, cdr is the file path."
   (let (return-files source-dir-path)
@@ -114,14 +115,14 @@ Returns an alist. car is source name, cdr is the file path."
                               (boundp source-dir-path))
                          (symbol-value source-dir-path))
                         (t
-                         (error "[companu-html] invalid element %s in\
- `ac-html-source-dirs'" source-dir-path))))
+                         (error "[company-html] invalid element %s in\
+ `web-completion-data-sources'" source-dir-path))))
             (when source-dir-path
               (setq source-dir-path (expand-file-name file-name source-dir-path))
               (when (file-exists-p source-dir-path)
                 (add-to-list 'return-files (cons (car name-dir-cons-cell) source-dir-path))
                 )))
-          ac-html-source-dirs)
+          web-completion-data-sources)
     return-files))
 
 (defun company-web-make-candidate (framework-name items)
