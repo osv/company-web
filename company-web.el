@@ -53,8 +53,6 @@
 (require 'dash)
 (require 'cl)
 
-(require 'ac-html-complete-data)
-
 (defgroup company-web nil
   "HTML Complete, Company back-end."
   :group 'company
