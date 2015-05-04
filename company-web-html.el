@@ -27,37 +27,37 @@
 
 (require 'company-web)
 
-(defconst company-web/html-get-tag-re
+(defconst company-web-html-get-tag-re
   (concat "<[[:space:]]*\\(" company-web-selector "+\\)[[:space:]]+")
   "Regexp of html tag")
 
-(defconst company-web/html-get-attribute-re
+(defconst company-web-html-get-attribute-re
   (concat "[^[:alnum:]-]\\(" company-web-selector "+\\)=")
   "Regexp of html attribute")
 
-(defun company-web/current-html-tag ()
+(defun company-web-html-current-tag ()
   "Return current html tag user is typing on."
   (save-excursion
-    (re-search-backward company-web/html-get-tag-re nil t)
+    (re-search-backward company-web-html-get-tag-re nil t)
     (match-string 1)))
 
-(defun company-web/current-html-attribute ()
+(defun company-web-html-current-attribute ()
   "Return current html tag's attribute user is typing on."
   (save-excursion
-    (re-search-backward company-web/html-get-attribute-re nil t)
+    (re-search-backward company-web-html-get-attribute-re nil t)
     (match-string 1)))
 
-(defconst company-web/html-tag-regexp
+(defconst company-web-html-tag-regexp
   (concat "<[[:space:]]*\\("
           company-web-selector
           "*\\)")
   "A regular expression matching HTML tags.")
 
-(defconst company-web/html-attribute-regexp
+(defconst company-web-html-attribute-regexp
   (concat "<[[:space:]]*" company-web-selector "[^>]*[[:space:]]+\\(.*\\)")
   "A regular expression matching HTML attribute.")
 
-(defconst company-web/html-value-regexp
+(defconst company-web-html-value-regexp
   (concat "\\w=[\"]\\(?:[^\"]+[ ;:]\\|\\)"
           "\\(" company-web-selector "*\\)")
   "A regular expression matching HTML attribute.")
@@ -72,32 +72,32 @@
     (duplicates nil)
     (prefix (and (or (derived-mode-p 'html-mode)
                      (derived-mode-p 'web-mode))
-                 (or (company-grab company-web/html-value-regexp 1)
-                     (company-grab company-web/html-tag-regexp 1)
-                     (company-grab company-web/html-attribute-regexp 1)
+                 (or (company-grab company-web-html-value-regexp 1)
+                     (company-grab company-web-html-tag-regexp 1)
+                     (company-grab company-web-html-attribute-regexp 1)
                      )))
     (candidates
      (cond
       ;; value
-      ((company-grab company-web/html-value-regexp 1)
-       (all-completions arg (company-web-candidates-attrib-values (company-web/current-html-tag)
-                                                                  (company-web/current-html-attribute))))
+      ((company-grab company-web-html-value-regexp 1)
+       (all-completions arg (company-web-candidates-attrib-values (company-web-html-current-tag)
+                                                                  (company-web-html-current-attribute))))
       ;; tag
-      ((company-web-grab-not-in-string company-web/html-tag-regexp 1)
+      ((company-web-grab-not-in-string company-web-html-tag-regexp 1)
        (all-completions arg (company-web-candidates-tags)))
       ;; attr
-      ((company-web-grab-not-in-string company-web/html-attribute-regexp 1)
-       (all-completions arg (company-web-candidates-attribute (company-web/current-html-tag))))))
+      ((company-web-grab-not-in-string company-web-html-attribute-regexp 1)
+       (all-completions arg (company-web-candidates-attribute (company-web-html-current-tag))))))
     (annotation (company-web-annotation arg))
     (doc-buffer
      ;; No need grab for attribute value, attribute regexp will match enyway
      (cond
       ;; tag
-      ((company-grab company-web/html-tag-regexp 1)
+      ((company-grab company-web-html-tag-regexp 1)
        (company-web-tag-doc arg))
       ;; attr
-      ((company-grab company-web/html-attribute-regexp 1)
-       (company-web-attribute-doc (company-web/current-html-tag) arg))))))
+      ((company-grab company-web-html-attribute-regexp 1)
+       (company-web-attribute-doc (company-web-html-current-tag) arg))))))
 
 (provide 'company-web-html)
 ;;; company-web-html.el ends here

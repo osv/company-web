@@ -27,27 +27,27 @@
 
 (require 'company-web)
 
-(defconst company-web/jade-get-tag-re
+(defconst company-web-jade-get-tag-re
   (concat "^[\t ]*\\(" company-web-selector "+\\)[.#(]")
   "Regexp of jade attribute or tag")
 
-(defconst company-web/jade-get-attribute-re
+(defconst company-web-jade-get-attribute-re
   (concat "[^[:alnum:]-]\\(" company-web-selector "+\\) *=")
   "Regexp of jade attribute or tag")
 
-(defun company-web/current-jade-tag ()
+(defun company-web-jade-current-tag ()
   "Return current jade tag user is typing on."
   (save-excursion
-    (re-search-backward company-web/jade-get-tag-re nil t)
+    (re-search-backward company-web-jade-get-tag-re nil t)
     (match-string 1)))
 
-(defun company-web/current-jade-attribute ()
+(defun company-web-jade-current-attribute ()
   "Return current jade tag's attribute user is typing on."
   (save-excursion
-    (re-search-backward company-web/jade-get-attribute-re nil t)
+    (re-search-backward company-web-jade-get-attribute-re nil t)
     (match-string 1)))
 
-(defconst company-web/jade-id-regexp
+(defconst company-web-jade-id-regexp
   (concat
    ;; tag or nil(div)
    "^ *\\(" company-web-selector "+\\|\\)"
@@ -63,7 +63,7 @@ or
   span#bar -> <span id=\"bar\">
 .")
 
-(defconst company-web/jade-class-regexp
+(defconst company-web-jade-class-regexp
   (concat
    ;; tag or nil(div)
    "^ *\\(" company-web-selector "+\\|\\)"
@@ -82,15 +82,15 @@ or
   span#foo.baz.bar
 .")
 
-(defconst company-web/jade-tag-regexp
+(defconst company-web-jade-tag-regexp
   (concat "^[\t ]*\\(" company-web-selector "*\\)")
   "A regular expression matching Jade tags.")
 
-(defconst company-web/jade-attribute-regexp
+(defconst company-web-jade-attribute-regexp
   (concat "\\(?:,\\|(\\)[ ]*\\(.*\\)")
   "A regular expression matching Jade attribute.")
 
-(defconst company-web/jade-value-regexp
+(defconst company-web-jade-value-regexp
   (concat "\\w *= *[\"]\\(?:[^\"]+[ ]\\|\\)\\(" company-web-selector "*\\)")
   "A regular expression matching Jade attribute.")
 
@@ -103,51 +103,51 @@ or
     (ignore-case t)
     (duplicates nil)
     (prefix (and (derived-mode-p 'jade-mode)
-                 (or (company-grab company-web/jade-value-regexp 1)
-                     (company-grab company-web/jade-tag-regexp 1)
-                     (company-grab company-web/jade-id-regexp 2)
-                     (company-grab company-web/jade-class-regexp 2)
-                     (company-grab company-web/jade-attribute-regexp 1)
+                 (or (company-grab company-web-jade-value-regexp 1)
+                     (company-grab company-web-jade-tag-regexp 1)
+                     (company-grab company-web-jade-id-regexp 2)
+                     (company-grab company-web-jade-class-regexp 2)
+                     (company-grab company-web-jade-attribute-regexp 1)
                      )))
     (candidates
      (cond
       ;; value
-      ((company-grab company-web/jade-value-regexp 1)
-       (all-completions arg (company-web-candidates-attrib-values (company-web/current-jade-tag)
-                                                           (company-web/current-jade-attribute))))
+      ((company-grab company-web-jade-value-regexp 1)
+       (all-completions arg (company-web-candidates-attrib-values (company-web-jade-current-tag)
+                                                           (company-web-jade-current-attribute))))
       ;; class ".foo" or id "#bar"
       ((and (not (company-web-is-point-in-string-face))
-            (company-grab company-web/jade-id-regexp 1))
-       (let ((tag (company-grab company-web/jade-id-regexp 1)))
+            (company-grab company-web-jade-id-regexp 1))
+       (let ((tag (company-grab company-web-jade-id-regexp 1)))
          (if (string= "" tag)
              (setq tag "div"))
          (all-completions arg (company-web-candidates-attrib-values tag "id"))))
 
-      ((company-web-grab-not-in-string company-web/jade-class-regexp 1)
-       (let ((tag (company-grab company-web/jade-class-regexp 1)))
+      ((company-web-grab-not-in-string company-web-jade-class-regexp 1)
+       (let ((tag (company-grab company-web-jade-class-regexp 1)))
          (if (string= "" tag)
              (setq tag "div"))
          (all-completions arg (company-web-candidates-attrib-values tag "class"))))
 
       ;; tag
-      ((company-web-grab-not-in-string company-web/jade-tag-regexp 1)
+      ((company-web-grab-not-in-string company-web-jade-tag-regexp 1)
        (all-completions arg (company-web-candidates-tags)))
       ;; attr
-      ((company-web-grab-not-in-string company-web/jade-attribute-regexp 1)
-       (all-completions arg (company-web-candidates-attribute (company-web/current-jade-tag))))))
+      ((company-web-grab-not-in-string company-web-jade-attribute-regexp 1)
+       (all-completions arg (company-web-candidates-attribute (company-web-jade-current-tag))))))
     (annotation (company-web-annotation arg))
     (doc-buffer
      (cond
-      ((or (company-web-grab-not-in-string company-web/jade-id-regexp 1)
-	   (company-web-grab-not-in-string company-web/jade-class-regexp 2)
-	   (company-grab company-web/jade-value-regexp 1))
+      ((or (company-web-grab-not-in-string company-web-jade-id-regexp 1)
+	   (company-web-grab-not-in-string company-web-jade-class-regexp 2)
+	   (company-grab company-web-jade-value-regexp 1))
        (company-web-candidate-prop-doc arg))
       ;; tag
-      ((company-grab company-web/jade-tag-regexp 1)
+      ((company-grab company-web-jade-tag-regexp 1)
        (company-web-tag-doc arg))
       ;; attr
-      ((company-grab company-web/jade-attribute-regexp 1)
-       (company-web-attribute-doc (company-web/current-jade-tag) arg))))))
+      ((company-grab company-web-jade-attribute-regexp 1)
+       (company-web-attribute-doc (company-web-jade-current-tag) arg))))))
 
 (provide 'company-web-jade)
 ;;; company-web-jade.el ends here

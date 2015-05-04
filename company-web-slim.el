@@ -27,27 +27,27 @@
 
 (require 'company-web)
 
-(defconst company-web/slim-get-tag-re
+(defconst company-web-slim-get-tag-re
   (concat "^[\t ]*\\(" company-web-selector "+\\)")
   "Regexp of slim attribute or tag")
 
-(defconst company-web/slim-get-attribute-re
+(defconst company-web-slim-get-attribute-re
   (concat "[^[:alnum:]-]\\(" company-web-selector "+\\) *=")
   "Regexp of slim attribute or tag")
 
-(defun company-web/current-slim-tag ()
+(defun company-web-slim-current-tag ()
   "Return current slim tag user is typing on."
   (save-excursion
-    (re-search-backward company-web/slim-get-tag-re nil t)
+    (re-search-backward company-web-slim-get-tag-re nil t)
     (match-string 1)))
 
-(defun company-web/current-slim-attribute ()
+(defun company-web-slim-current-attribute ()
   "Return current slim tag's attribute user is typing on."
   (save-excursion
-    (re-search-backward company-web/slim-get-attribute-re nil t)
+    (re-search-backward company-web-slim-get-attribute-re nil t)
     (match-string 1)))
 
-(defconst company-web/slim-id-regexp
+(defconst company-web-slim-id-regexp
   (concat
    ;; tag or nil(div)
    "^ *\\(" company-web-selector "+\\|\\)"
@@ -63,7 +63,7 @@ or
   span#bar -> <span id=\"bar\">
 .")
 
-(defconst company-web/slim-class-regexp
+(defconst company-web-slim-class-regexp
   (concat
    ;; tag or nil(div)
    "^ *\\(" company-web-selector "+\\|\\)"
@@ -82,11 +82,11 @@ or
   span#foo.baz.bar
 .")
 
-(defconst company-web/slim-tag-regexp
+(defconst company-web-slim-tag-regexp
   (concat "^[\t ]*\\(" company-web-selector "*\\)")
   "A regular expression matching Slim tags.")
 
-(defconst company-web/slim-attribute-regexp
+(defconst company-web-slim-attribute-regexp
   (concat "\\(?:"                       ; attribute may start after tag and: "[", "(", "{"
           "[[({]"                       ;
           "\\|"                         ; or
@@ -94,7 +94,7 @@ or
           "\\(" company-web-selector "*\\)")
   "A regular expression matching Slim attribute.")
 
-(defconst company-web/slim-value-regexp
+(defconst company-web-slim-value-regexp
   (concat "\\w *= *[\"]\\(?:[^\"]+[ ]\\|\\)\\(" company-web-selector "*\\)")
   "A regular expression matching Slim attribute.")
 
@@ -107,49 +107,49 @@ or
     (ignore-case t)
     (duplicates nil)
     (prefix (and (derived-mode-p 'slim-mode)
-                 (or (company-grab company-web/slim-value-regexp 1)
-                     (company-grab company-web/slim-tag-regexp 1)
-                     (company-grab company-web/slim-id-regexp 2)
-                     (company-grab company-web/slim-class-regexp 2)
-                     (company-grab company-web/slim-attribute-regexp 1)
+                 (or (company-grab company-web-slim-value-regexp 1)
+                     (company-grab company-web-slim-tag-regexp 1)
+                     (company-grab company-web-slim-id-regexp 2)
+                     (company-grab company-web-slim-class-regexp 2)
+                     (company-grab company-web-slim-attribute-regexp 1)
                      )))
     (candidates
      (cond
       ;; value
-      ((company-grab company-web/slim-value-regexp 1)
-       (all-completions arg (company-web-candidates-attrib-values (company-web/current-slim-tag)
-                                                           (company-web/current-slim-attribute))))
+      ((company-grab company-web-slim-value-regexp 1)
+       (all-completions arg (company-web-candidates-attrib-values (company-web-slim-current-tag)
+                                                           (company-web-slim-current-attribute))))
       ;; class ".foo" or id "#bar"
-      ((company-web-grab-not-in-string company-web/slim-id-regexp 1)
-      (let ((tag (company-grab company-web/slim-id-regexp 1)))
+      ((company-web-grab-not-in-string company-web-slim-id-regexp 1)
+      (let ((tag (company-grab company-web-slim-id-regexp 1)))
          (if (string= "" tag)
              (setq tag "div"))
          (all-completions arg (company-web-candidates-attrib-values tag "id"))))
 
-      ((company-web-grab-not-in-string company-web/slim-class-regexp 1)
-       (let ((tag (company-grab company-web/slim-class-regexp 1)))
+      ((company-web-grab-not-in-string company-web-slim-class-regexp 1)
+       (let ((tag (company-grab company-web-slim-class-regexp 1)))
          (if (string= "" tag)
              (setq tag "div"))
          (all-completions arg (company-web-candidates-attrib-values tag "class"))))
       ;; tag
-      ((company-web-grab-not-in-string company-web/slim-tag-regexp 1)
+      ((company-web-grab-not-in-string company-web-slim-tag-regexp 1)
        (all-completions arg (company-web-candidates-tags)))
       ;; attr
-      ((company-web-grab-not-in-string company-web/slim-attribute-regexp 1)
-       (all-completions arg (company-web-candidates-attribute (company-web/current-slim-tag))))))
+      ((company-web-grab-not-in-string company-web-slim-attribute-regexp 1)
+       (all-completions arg (company-web-candidates-attribute (company-web-slim-current-tag))))))
     (annotation (company-web-annotation arg))
     (doc-buffer
      (cond
-      ((or (company-web-grab-not-in-string company-web/slim-id-regexp 1)
-	   (company-web-grab-not-in-string company-web/slim-class-regexp 2)
-	   (company-grab company-web/slim-value-regexp 1))
+      ((or (company-web-grab-not-in-string company-web-slim-id-regexp 1)
+	   (company-web-grab-not-in-string company-web-slim-class-regexp 2)
+	   (company-grab company-web-slim-value-regexp 1))
        (company-web-candidate-prop-doc arg))
       ;; tag
-      ((company-grab company-web/slim-tag-regexp 1)
+      ((company-grab company-web-slim-tag-regexp 1)
        (company-web-tag-doc arg))
       ;; attr
-      ((company-grab company-web/slim-attribute-regexp 1)
-       (company-web-attribute-doc (company-web/current-slim-tag) arg))))))
+      ((company-grab company-web-slim-attribute-regexp 1)
+       (company-web-attribute-doc (company-web-slim-current-tag) arg))))))
 
 (provide 'company-web-slim)
 ;;; company-web-slim.el ends here
