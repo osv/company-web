@@ -189,7 +189,7 @@ DOCUMENTATION is string or function."
     (-flatten items)))
 
 (defun company-web-candidates-attrib-values (tag attribute)
-  (if (and ac-html-complete-css
+  (if (and company-web-complete-css
            (string= attribute "style")
            (< ;; make sure that quote openned before ac-css-prefix
             (1+ (save-excursion (re-search-backward "\"" nil t)))
