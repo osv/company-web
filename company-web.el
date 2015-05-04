@@ -209,7 +209,7 @@ DOCUMENTATION is string or function."
    '("</\\([[:alnum:]-]+\\)" 1 font-lock-function-name-face t)
    '("\\(?:^\\| \\)\\.\\([[:alnum:]-]+\\)" 1 font-lock-type-face t)
    '("\\([[:alnum:]-]+\\)=" 1 font-lock-type-face t)
-   '("^[A-Z][-_a-z ]+:" . font-lock-constant-face)))
+   '("^[_ [:alnum:]-]+:" . font-lock-constant-face)))
 
 (defun company-web-doc-buffer (&optional string)
   (with-current-buffer (get-buffer-create "*html-documentation*")
