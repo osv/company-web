@@ -25,9 +25,6 @@
 
 ;; Same as ac-html, but for `company' completion framework.
 
-;; Note: It require ac-html and `auto-complete' will be installed too,
-;; however it will be NOT required.
-
 ;; Configuration:
 ;;
 ;;   (add-to-list 'company-backends 'company-web-html)
