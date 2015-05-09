@@ -5,7 +5,7 @@ It uses [company-mode](http://company-mode.github.io).
 
 ## Setup
 
-Install `company`, 'ac-html' as dependency.
+Install `company` via Melpa.
 
 Add the following to your emacs-config:
 
@@ -20,9 +20,6 @@ Add the following to your emacs-config:
 (define-key web-mode-map (kbd "C-'") 'company-web-html)
 ```
 
-Note: If you install `ac-html` via Melpa, as requirements `auto-complete` will be installed too,
-however `company-web-html` don't require it.
-
 Additionally you may want install `ac-html-csswatcher` and `ac-html-bootstrap`.
 
 ## Possible improvements of company-mode
@@ -35,7 +32,7 @@ Additionally you may want install `ac-html-csswatcher` and `ac-html-bootstrap`.
 ```
 
 ### Only use company-mode with company-web-html in web-mode
-By default company-mode loads every backend it has. If you want to only have company-mode enabled in go-mode add the following to your emacs-config:
+By default company-mode loads every backend it has. If you want to only have company-mode enabled in web-mode add the following to your emacs-config:
 
 ```lisp
 (add-hook 'web-mode-hook (lambda ()
