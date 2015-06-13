@@ -27,6 +27,12 @@
 
 (require 'company-web)
 
+(defcustom company-web-html-emmet-enable t
+  "Enable emmet specified completion when `emmet-mode' active."
+  :group 'company-web
+  :type 'boolean)
+
+;; html grabs
 (defconst company-web-html-get-tag-re
   (concat "<[[:space:]]*\\(" company-web-selector "+\\)[[:space:]]+")
   "Regexp of html tag")
@@ -62,6 +68,24 @@
           "\\(" company-web-selector "*\\)")
   "A regular expression matching HTML attribute.")
 
+;; emmet grabs
+(defconst company-web-html-emmet-tag-regexp
+  (concat "\\(?:^\\|[\t +>]+\\)" 
+          "\\(" company-web-selector "*\\)")
+  "A regular expression matching emmet's tags.")
+
+(defun company-web-html-emmet-grab ()
+  (and company-web-html-emmet-enable
+       (-contains? minor-mode-list 'emmet-mode)
+       (company-grab company-web-html-emmet-tag-regexp 1)))
+
+(defun company-web-html-emmet-candidates()
+   (when (and company-web-html-emmet-enable
+              (-contains? minor-mode-list 'emmet-mode))
+     (cond
+      ((company-grab company-web-html-emmet-tag-regexp 1)
+       (all-completions arg (company-web-candidates-tags))))))
+
 ;;;###autoload
 (defun company-web-html (command &optional arg &rest ignored)
   "`company-mode' completion back-end for `html-mode' and `web-mode'."
@@ -75,9 +99,12 @@
                  (or (company-grab company-web-html-value-regexp 1)
                      (company-grab company-web-html-tag-regexp 1)
                      (company-grab company-web-html-attribute-regexp 1)
-                     )))
+                     (company-web-html-emmet-grab))))
     (candidates
      (cond
+      ;; emmet
+      ((company-web-html-emmet-grab)
+       (company-web-html-emmet-candidates))
       ;; value
       ((company-grab company-web-html-value-regexp 1)
        (all-completions arg (company-web-candidates-attrib-values (company-web-html-current-tag)
