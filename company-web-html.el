@@ -106,7 +106,21 @@
            "\\(?:" company-web-selector "+=\"[^\"]*\"\\|\\)+"
            ;; current attribute
            "\\(" company-web-selector "*\\)")
-  "A regular expression matching emmet's class name.")
+  "A regular expression matching emmet's attribute name.")
+
+(defconst company-web-html-emmet-value-regexp
+  (concat  "\\(?:^\\|[\t +>]+\\)"
+           ;; get tag name
+           "\\(" company-web-selector "\\)"
+           ;; skip not tag separator
+           "[^\t +>]*?"
+           ;;      untill found "["
+           "\\["
+           ;; get current attribute
+           "\\(.+\\)"
+           ;; get current value
+           "=\"\\(.*\\)")
+  "A regular expression matching emmet's value name.")
 
 (defun company-web-html-emmet-grab ()
   (and company-web-html-emmet-enable
@@ -115,7 +129,8 @@
         (company-grab company-web-html-emmet-tag-regexp 1)
         (company-grab company-web-html-emmet-class-regexp 2)
         (company-grab company-web-html-emmet-id-regexp 2)
-        (company-grab company-web-html-emmet-attr-regexp 2))))
+        (company-grab company-web-html-emmet-attr-regexp 2)
+        (company-grab company-web-html-emmet-value-regexp 3))))
 
 (defun company-web-html-emmet-candidates()
    (when (and company-web-html-emmet-enable
@@ -140,7 +155,11 @@
        (let ((tag (company-grab company-web-html-emmet-attr-regexp 1)))
          (if (string= "" tag)
              (setq tag "div"))
-         (all-completions arg (company-web-candidates-attribute tag)))))))
+         (all-completions arg (company-web-candidates-attribute tag))))
+      ((company-grab company-web-html-emmet-value-regexp 3)
+       (let ((tag (company-grab company-web-html-emmet-value-regexp 1))
+             (attribute (company-grab company-web-html-emmet-value-regexp 2)))
+         (all-completions arg (company-web-candidates-attrib-values tag attribute)))))))
 
 ;;;###autoload
 (defun company-web-html (command &optional arg &rest ignored)
