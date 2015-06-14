@@ -70,7 +70,7 @@
 
 ;; emmet grabs
 (defconst company-web-html-emmet-tag-separator
-  "\\(?:^\\|[\t +>]+\\)")
+  "\\(?:^\\|[\t( +>]+\\)")
 
 (defconst company-web-html-emmet-tag-regexp
   (concat company-web-html-emmet-tag-separator 
