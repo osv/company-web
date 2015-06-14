@@ -172,6 +172,35 @@
              (attribute (company-grab company-web-html-emmet-value-regexp 2)))
          (all-completions arg (company-web-candidates-attrib-values tag attribute)))))))
 
+(defun company-web-html-emmet-doc (arg)
+  (when (and company-web-html-emmet-enable
+             (-contains? minor-mode-list 'emmet-mode))
+    (cond
+     ((company-grab company-web-html-emmet-tag-regexp 1)
+      (company-web-tag-doc arg))
+     ;; class (default for div tag)
+     ((company-grab company-web-html-emmet-class-regexp 2)
+      (let ((tag (company-grab company-web-html-emmet-class-regexp 1)))
+        (if (string= "" tag)
+            (setq tag "div"))
+        (company-web-attribute-doc tag arg)))
+    ;; id (default for div tag)
+    ((company-grab company-web-html-emmet-id-regexp 2)
+     (let ((tag (company-grab company-web-html-emmet-id-regexp 1)))
+       (if (string= "" tag)
+           (setq tag "div"))
+       (company-web-attribute-doc tag arg)))
+    ;; attributes (default for div)
+    ((company-grab company-web-html-emmet-attr-regexp 2)
+     (let ((tag (company-grab company-web-html-emmet-attr-regexp 1)))
+       (if (string= "" tag)
+           (setq tag "div"))
+       (company-web-attribute-doc tag arg)))
+    ((company-grab company-web-html-emmet-value-regexp 3)
+     (let ((tag (company-grab company-web-html-emmet-value-regexp 1))
+           (attribute (company-grab company-web-html-emmet-value-regexp 2)))
+       (company-web-attribute-doc tag arg))))))
+
 ;;;###autoload
 (defun company-web-html (command &optional arg &rest ignored)
   "`company-mode' completion back-end for `html-mode' and `web-mode'."
@@ -225,7 +254,10 @@
        (company-web-tag-doc arg))
       ;; attr
       ((company-grab company-web-html-attribute-regexp 1)
-       (company-web-attribute-doc (company-web-html-current-tag) arg))))))
+       (company-web-attribute-doc (company-web-html-current-tag) arg))
+      ;; emmet
+      ((company-web-html-emmet-grab)
+       (company-web-html-emmet-doc arg))))))
 
 (provide 'company-web-html)
 ;;; company-web-html.el ends here
