@@ -69,13 +69,16 @@
   "A regular expression matching HTML attribute.")
 
 ;; emmet grabs
+(defconst company-web-html-emmet-tag-separator
+  "\\(?:^\\|[\t +>]+\\)")
+
 (defconst company-web-html-emmet-tag-regexp
-  (concat "\\(?:^\\|[\t +>]+\\)" 
+  (concat company-web-html-emmet-tag-separator 
           "\\(" company-web-selector "*\\)")
   "A regular expression matching emmet's tags.")
 
 (defconst company-web-html-emmet-class-regexp
-  (concat  "\\(?:^\\|[\t +>]+\\)"
+  (concat  company-web-html-emmet-tag-separator
            ;; tag
            "\\(" company-web-selector "+\\|\\)"
            ;; skip #foo or .bar or .foo.bar.baz
@@ -85,7 +88,7 @@
   "A regular expression matching emmet's class name.")
 
 (defconst company-web-html-emmet-id-regexp
-  (concat  "\\(?:^\\|[\t +>]+\\)"
+  (concat  company-web-html-emmet-tag-separator
            ;; tag
            "\\(" company-web-selector "+\\|\\)"
            ;; skip #foo or .bar or .foo.bar.baz
@@ -95,7 +98,7 @@
   "A regular expression matching emmet's class name.")
 
 (defconst company-web-html-emmet-attr-regexp
-  (concat  "\\(?:^\\|[\t +>]+\\)"
+  (concat  company-web-html-emmet-tag-separator
            ;; tag name
            "\\(" company-web-selector "+\\)"
            ;; skip not tag separator
@@ -109,7 +112,7 @@
   "A regular expression matching emmet's attribute name.")
 
 (defconst company-web-html-emmet-value-regexp
-  (concat  "\\(?:^\\|[\t +>]+\\)"
+  (concat  company-web-html-emmet-tag-separator
            ;; get tag name
            "\\(" company-web-selector "\\)"
            ;; skip not tag separator
