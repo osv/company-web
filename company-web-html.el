@@ -81,6 +81,8 @@
   (concat  company-web-html-emmet-tag-separator
            ;; tag
            "\\(" company-web-selector "+\\|\\)"
+           ;;    maybe "/" after tag
+           "/?"
            ;; skip #foo or .bar or .foo.bar.baz
            "[#.[:alnum:]-]*"
            ;; class
@@ -91,6 +93,8 @@
   (concat  company-web-html-emmet-tag-separator
            ;; tag
            "\\(" company-web-selector "+\\|\\)"
+           ;;    maybe "/" after tag
+           "/?"
            ;; skip #foo or .bar or .foo.bar.baz
            "[#.[:alnum:]-]*"
            ;; class
@@ -101,6 +105,8 @@
   (concat  company-web-html-emmet-tag-separator
            ;; tag name
            "\\(" company-web-selector "+\\)"
+           ;;    maybe "/" after tag
+           "/?"
            ;; skip not tag separator
            "[^\t +>]*?"
            ;;      untill found "["
@@ -115,6 +121,8 @@
   (concat  company-web-html-emmet-tag-separator
            ;; get tag name
            "\\(" company-web-selector "\\)"
+           ;;    maybe "/" after tag
+           "/?"
            ;; skip not tag separator
            "[^\t +>]*?"
            ;;      untill found "["
