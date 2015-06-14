@@ -256,7 +256,7 @@ Property of doc CANDIDATE or load file from `html-attributes-short-docs/global-C
   (and (not (company-web-is-point-in-string-face))
        (company-grab regexp expression)))
 
-(defconst company-web-selector "[[:alnum:]-]"
+(defconst company-web-selector "[[:alnum:]_-]"
   "Regexp of html attribute or tag")
 
 (provide 'company-web)
