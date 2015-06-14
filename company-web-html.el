@@ -94,13 +94,28 @@
            "[#]\\(" company-web-selector "*\\)")
   "A regular expression matching emmet's class name.")
 
+(defconst company-web-html-emmet-attr-regexp
+  (concat  "\\(?:^\\|[\t +>]+\\)"
+           ;; tag name
+           "\\(" company-web-selector "+\\)"
+           ;; skip not tag separator
+           "[^\t +>]*?"
+           ;;      untill found "["
+           "\\["
+           ;;      skip any defined attributes like foo="bar"
+           "\\(?:" company-web-selector "+=\"[^\"]*\"\\|\\)+"
+           ;; current attribute
+           "\\(" company-web-selector "*\\)")
+  "A regular expression matching emmet's class name.")
+
 (defun company-web-html-emmet-grab ()
   (and company-web-html-emmet-enable
        (-contains? minor-mode-list 'emmet-mode)
        (or
         (company-grab company-web-html-emmet-tag-regexp 1)
         (company-grab company-web-html-emmet-class-regexp 2)
-        (company-grab company-web-html-emmet-id-regexp 2))))
+        (company-grab company-web-html-emmet-id-regexp 2)
+        (company-grab company-web-html-emmet-attr-regexp 2))))
 
 (defun company-web-html-emmet-candidates()
    (when (and company-web-html-emmet-enable
@@ -114,11 +129,18 @@
          (if (string= "" tag)
              (setq tag "div"))
          (all-completions arg (company-web-candidates-attrib-values tag "class"))))
+      ;; id (default for div tag)
       ((company-grab company-web-html-emmet-id-regexp 2)
        (let ((tag (company-grab company-web-html-emmet-id-regexp 1)))
          (if (string= "" tag)
              (setq tag "div"))
-         (all-completions arg (company-web-candidates-attrib-values tag "id")))))))
+         (all-completions arg (company-web-candidates-attrib-values tag "id"))))
+      ;; attributes (default for div)
+      ((company-grab company-web-html-emmet-attr-regexp 2)
+       (let ((tag (company-grab company-web-html-emmet-attr-regexp 1)))
+         (if (string= "" tag)
+             (setq tag "div"))
+         (all-completions arg (company-web-candidates-attribute tag)))))))
 
 ;;;###autoload
 (defun company-web-html (command &optional arg &rest ignored)
@@ -163,8 +185,7 @@
        (all-completions arg (company-web-candidates-attribute (company-web-html-current-tag))))
       ;; emmet
       ((company-web-html-emmet-grab)
-       (company-web-html-emmet-candidates)))
-)
+       (company-web-html-emmet-candidates))))
     (annotation (company-web-annotation arg))
     (doc-buffer
      ;; No need grab for attribute value, attribute regexp will match enyway
