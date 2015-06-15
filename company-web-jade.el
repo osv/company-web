@@ -91,7 +91,9 @@ or
   "A regular expression matching Jade attribute.")
 
 (defconst company-web-jade-value-regexp
-  (concat "\\w *= *[\"]\\(?:[^\"]+[ ]\\|\\)\\(" company-web-selector "*\\)")
+  (concat "\\w *= *[\"]\\(?:[^\"]+[ ]\\|\\)"
+          ;; catch value
+          "\\([^\"]*\\)")
   "A regular expression matching Jade attribute.")
 
 ;;;###autoload
@@ -107,8 +109,7 @@ or
                      (company-grab company-web-jade-tag-regexp 1)
                      (company-grab company-web-jade-id-regexp 2)
                      (company-grab company-web-jade-class-regexp 2)
-                     (company-grab company-web-jade-attribute-regexp 1)
-                     )))
+                     (company-grab company-web-jade-attribute-regexp 1))))
     (candidates
      (cond
       ;; value

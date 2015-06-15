@@ -95,7 +95,9 @@ or
   "A regular expression matching Slim attribute.")
 
 (defconst company-web-slim-value-regexp
-  (concat "\\w *= *[\"]\\(?:[^\"]+[ ]\\|\\)\\(" company-web-selector "*\\)")
+  (concat "\\w *= *[\"]\\(?:[^\"]+[ ]\\|\\)"
+          ;; catch value
+          "\\([^\"]*\\)")
   "A regular expression matching Slim attribute.")
 
 ;;;###autoload
@@ -111,8 +113,7 @@ or
                      (company-grab company-web-slim-tag-regexp 1)
                      (company-grab company-web-slim-id-regexp 2)
                      (company-grab company-web-slim-class-regexp 2)
-                     (company-grab company-web-slim-attribute-regexp 1)
-                     )))
+                     (company-grab company-web-slim-attribute-regexp 1))))
     (candidates
      (cond
       ;; value

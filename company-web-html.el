@@ -78,7 +78,8 @@ You may want disable it when you remap emmet-mode key map and change RET behavio
 
 (defconst company-web-html-value-regexp
   (concat "<[^>]+\\w=[\"]\\(?:[^\"]+[ ;:]\\|\\)"
-          "\\(" company-web-selector "*\\)")
+          ;; catch value
+          "\\([^\"]*\\)")
   "A regular expression matching HTML attribute.")
 
 ;; emmet grabs
