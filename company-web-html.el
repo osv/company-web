@@ -32,6 +32,19 @@
   :group 'company-web
   :type 'boolean)
 
+(defcustom company-web-html-emmet-enable t
+  "Enable emmet specified completion when `emmet-mode' active."
+  :group 'company-web
+  :type 'boolean)
+
+(defcustom company-web-html-emmet-preview-enable-advice t
+  "Enable advice for `emmet-preview-accept'. This advice check for visibility of company popup
+and call `company-complete-selection' if so.
+
+You may want disable it when you remap emmet-mode key map and change RET behavior."
+  :group 'company-web
+  :type 'boolean)
+
 ;; html grabs
 (defconst company-web-html-get-tag-re
   (concat "<[[:space:]]*\\(" company-web-selector "+\\)[[:space:]]+")
@@ -171,6 +184,22 @@
        (let ((tag (company-grab company-web-html-emmet-value-regexp 1))
              (attribute (company-grab company-web-html-emmet-value-regexp 2)))
          (all-completions arg (company-web-candidates-attrib-values tag attribute)))))))
+
+(defadvice emmet-preview-accept (around emmet-with-company-accept)
+  "First call `company-complete-selection' if visible company popup."
+  (if (and company-web-html-emmet-enable
+           company-web-html-emmet-preview-enable-advice
+           company-pseudo-tooltip-overlay)
+      (company-complete-selection)
+    ad-do-it))
+
+(defadvice emmet-preview-abort (around emmet-with-company-abort)
+  "First call `company-abort' if visible company popup."
+  (if (and company-web-html-emmet-enable
+           company-web-html-emmet-preview-enable-advice
+           company-pseudo-tooltip-overlay)
+      (company-abort)
+    ad-do-it))
 
 (defun company-web-html-emmet-doc (arg)
   (when (and company-web-html-emmet-enable
