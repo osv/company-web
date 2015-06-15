@@ -182,6 +182,7 @@ You may want disable it when you remap emmet-mode key map and change RET behavio
         (if (string= "" tag)
             (setq tag "div"))
         (all-completions arg (company-web-candidates-attribute tag))))
+     ;; attribute values
      ((company-grab company-web-html-emmet-value-regexp 3)
       (let ((tag (company-grab company-web-html-emmet-value-regexp 1))
             (attribute (company-grab company-web-html-emmet-value-regexp 2)))
