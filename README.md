@@ -40,6 +40,12 @@ By default company-mode loads every backend it has. If you want to only have com
                           (company-mode t)))
 ```
 
+### Emmet integration
+
+Company-web support integration with `emmet-mode` and `emmet-preview` and add some advices to make `C-g` and `RET` keys work properly.
+
+![emmet with company-web](image/emmet.png)
+
 ### Color customization
 
 ```lisp

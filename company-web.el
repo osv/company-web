@@ -1,4 +1,4 @@
-;;; company-web.el --- Company version of ac-html, complete for web,html,jade,slim modes
+;;; company-web.el --- Company version of ac-html, complete for web,html,emmet,jade,slim modes
 
 ;; Copyright (C) 2015 Olexandr Sydorchuk
 
@@ -37,6 +37,9 @@
 ;;   (add-hook 'web-mode-hook (lambda ()
 ;;                             (set (make-local-variable 'company-backends) '(company-web-html company-files))
 ;;                             (company-mode t)))
+;;
+;; When you use `emmet-mode' (with `web-mode' and `html-mode')
+;; you may autocomplete as well as regular html complete.
 ;;
 ;; P.S: You may be interested in next packages:
 ;;
