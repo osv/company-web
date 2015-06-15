@@ -77,7 +77,7 @@ You may want disable it when you remap emmet-mode key map and change RET behavio
   "A regular expression matching HTML attribute.")
 
 (defconst company-web-html-value-regexp
-  (concat "\\w=[\"]\\(?:[^\"]+[ ;:]\\|\\)"
+  (concat "<[^>]+\\w=[\"]\\(?:[^\"]+[ ;:]\\|\\)"
           "\\(" company-web-selector "*\\)")
   "A regular expression matching HTML attribute.")
 
@@ -133,15 +133,17 @@ You may want disable it when you remap emmet-mode key map and change RET behavio
 (defconst company-web-html-emmet-value-regexp
   (concat  company-web-html-emmet-tag-separator
            ;; get tag name
-           "\\(" company-web-selector "\\)"
+           "\\(" company-web-selector "+\\)"
            ;;    maybe "/" after tag
            "/?"
            ;; skip not tag separator
            "[^\t +>]*?"
            ;;      untill found "["
            "\\["
+           ;;      skip any defined attributes like foo="bar"
+           "\\(?:" company-web-selector "+=\"[^\"]*\"\\|\\)+"
            ;; get current attribute
-           "\\(.+\\)"
+           "\\(" company-web-selector "+\\)"
            ;; get current value
            "=\"\\(.*\\)")
   "A regular expression matching emmet's value name.")
