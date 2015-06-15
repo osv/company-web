@@ -150,7 +150,7 @@ You may want disable it when you remap emmet-mode key map and change RET behavio
 
 (defun company-web-html-emmet-grab ()
   (and company-web-html-emmet-enable
-       (-contains? minor-mode-list 'emmet-mode)
+       (bound-and-true-p emmet-mode)
        (or
         (company-grab company-web-html-emmet-tag-regexp 1)
         (company-grab company-web-html-emmet-class-regexp 2)
@@ -160,7 +160,7 @@ You may want disable it when you remap emmet-mode key map and change RET behavio
 
 (defun company-web-html-emmet-candidates()
   (when (and company-web-html-emmet-enable
-             (-contains? minor-mode-list 'emmet-mode))
+             (bound-and-true-p emmet-mode))
     (cond
      ((company-grab company-web-html-emmet-tag-regexp 1)
       (all-completions arg (company-web-candidates-tags)))
@@ -205,7 +205,7 @@ You may want disable it when you remap emmet-mode key map and change RET behavio
 
 (defun company-web-html-emmet-doc (arg)
   (when (and company-web-html-emmet-enable
-             (-contains? minor-mode-list 'emmet-mode))
+             (bound-and-true-p emmet-mode))
     (cond
      ((company-grab company-web-html-emmet-tag-regexp 1)
       (company-web-tag-doc arg))
