@@ -68,6 +68,45 @@
   :group 'company-web
   :type 'boolean)
 
+(defface company-web-doc-base-face
+  '((((class color) (background light))
+     :foreground "navy" :inherit variable-pitch)
+    (((class color) (background dark))
+     :foreground "DeepSkyBlue" :inherit variable-pitch)
+    (t))
+  "Face for description text."
+  :group 'company-web)
+
+(defface company-web-doc-text-1-face
+  '((t :inherit company-web-doc-base-face))
+  "Face for description text."
+  :group 'company-web)
+
+(defface company-web-doc-header-1-face
+  '((t :inherit company-web-doc-base-face :weight bold))
+  "Face for header text."
+  :group 'company-web)
+
+(defface company-web-doc-important-face
+  '((t :inherit company-web-doc-base-face :weight bold))
+  "Face in square braces, ex: [HTML5]."
+  :group 'company-web)
+
+(defface company-web-doc-warning-face
+  '((t :inherit font-lock-warning-face))
+  "Face for depracated, other warnings."
+  :group 'company-web)
+
+(defface company-web-doc-tag-face
+  '((t :inherit font-lock-function-name-face))
+  "Face html tag face."
+  :group 'company-web)
+
+(defface company-web-doc-attribute-face
+  '((t :inherit font-lock-type-face))
+  "Face html tag face."
+  :group 'company-web)
+
 (defvar company-web-string-check-faces '(font-lock-string-face web-mode-html-attr-value-face)
   "List of string faces to check.")
 
@@ -204,11 +243,13 @@ DOCUMENTATION is string or function."
 
 (defvar company-web-doc-font-lock-keywords
   (list
-   '("<\\([[:alnum:]-]+\\)" 1 font-lock-function-name-face t)
-   '("</\\([[:alnum:]-]+\\)" 1 font-lock-function-name-face t)
-   '("\\(?:^\\| \\)\\.\\([[:alnum:]-]+\\)" 1 font-lock-type-face t)
-   '("\\([[:alnum:]-]+\\)=" 1 font-lock-type-face t)
-   '("^[_ [:alnum:]-]+:" . font-lock-constant-face)))
+   '("\\(\\[.*?\\]+\\)" 1 'company-web-doc-important-face t)
+   '("\\b\\(deprecated\\)\\b" 1 'company-web-doc-warning-face t)
+   '("<\\([[:alnum:]-]+\\)" 1 'company-web-doc-tag-face t)
+   '("</\\([[:alnum:]-]+\\)>" 1 'company-web-doc-tag-face t)
+   '("\\([[:alnum:]-]+\\)=" 1 'company-web-doc-attribute-face t)
+   '("\\(?:^\\| \\)\\.\\([[:alnum:]-]+\\)" 1 'company-web-doc-attribute-face t)
+   '("^[_ [:alnum:]-]+:" . 'company-web-doc-header-1-face)))
 
 (defun company-web-doc-buffer (&optional string)
   (with-current-buffer (get-buffer-create "*html-documentation*")
@@ -220,6 +261,8 @@ DOCUMENTATION is string or function."
       (save-excursion
         (insert string)))
     (current-buffer)))
+
+;; end 
 
 (defun company-web-candidate-prop-doc (candidate)
   "Return documentation for chosen CANDIDATE.
@@ -236,7 +279,6 @@ Property of doc CANDIDATE or load file from `html-tag-short-docs/CANDIDATE'"
           (setq doc (company-web-read-file doc-file)))))
     (when doc
       (company-web-doc-buffer doc))))
-
 
 (defun company-web-attribute-doc (tag candidate)
   "Return documentation for chosen CANDIDATE.
