@@ -69,6 +69,22 @@ Company-web support integration with `emmet-mode` and `emmet-preview` and add so
     (t (:inherit company-tooltip-selection)))))
 ```
 
+If you want to add Tern completion support in web-mode with company-mode.
+You can add this into your `.emacs`:
+```lisp
+;; Enable JavaScript completion between <script>...</script> etc.
+(defadvice company-tern (before web-mode-set-up-ac-sources activate)
+  "Set `tern-mode' based on current language before running company-tern."
+  (if (equal major-mode 'web-mode)
+      (let ((web-mode-cur-language
+             (web-mode-language-at-pos)))
+        (if (or (string= web-mode-cur-language "javascript")
+               (string= web-mode-cur-language "jsx")
+               )
+            (unless tern-mode (tern-mode))
+          (if tern-mode (tern-mode))))))
+```
+
 ### Related projects
 You may be interested in next projects:
 - [ac-html-bootstrap](https://github.com/osv/ac-html-bootstrap) - Twitter:Bootstrap support for company-web/ac-html.
