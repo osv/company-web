@@ -74,7 +74,8 @@ You can add this into your `.emacs`:
 ```lisp
 (defun my-web-mode-hook ()
   "Hook for `web-mode'."
-  (set (make-local-variable 'company-backends) '(company-tern company-web-html company-yasnippet company-files)))
+    (set (make-local-variable 'company-backends)
+         '(company-tern company-web-html company-yasnippet company-files)))
 
 (add-hook 'web-mode-hook 'my-web-mode-hook)
 
@@ -91,8 +92,8 @@ You can add this into your `.emacs`:
             (unless tern-mode (tern-mode))
           (if tern-mode (tern-mode -1))))))
 
-;; manual js autocomplete
-(define-key web-mode-map (kbd "M-SPC") 'company-web-html)
+;; manual autocomplete
+(define-key web-mode-map (kbd "M-SPC") 'company-complete)
 
 ```
 
