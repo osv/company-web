@@ -50,6 +50,7 @@
 
 (require 'web-completion-data)
 (require 'company)
+(require 'company-css)
 (require 'dash)
 (require 'cl)
 
@@ -228,9 +229,8 @@ DOCUMENTATION is string or function."
 (defun company-web-candidates-attrib-values (tag attribute)
   (if (and company-web-complete-css
            (string= attribute "style")
-           (< ;; make sure that quote openned before ac-css-prefix
-            (1+ (save-excursion (re-search-backward "\"" nil t)))
-            (or (ac-css-prefix) 0)))
+           (save-excursion (re-search-backward "\"" nil t))
+           (save-excursion (re-search-backward "\\_<\\(.+?\\)\\_>\\s *:[^;]*\\=" nil t)))
       (-flatten (company-web-make-candidate "CSS" (company-css-property-values
                                                    (company-grab company-css-property-value-regexp 1))))
     (company-web-candidates-attrib-values-internal tag attribute)))
