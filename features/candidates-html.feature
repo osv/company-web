@@ -64,7 +64,7 @@ Feature company-web-html candidate
     Given the buffer is empty
     And I insert:
     """
-    <div dir="auto" sty
+    <div dir='auto' sty
     """
     And I execute company-web-html candidates command at current point
     Then company-web-html candidates contains "style"
