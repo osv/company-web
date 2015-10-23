@@ -1,4 +1,7 @@
 # Company-web
+
+[![Build Status](https://travis-ci.org/osv/company-web.png?branch=master)](https://travis-ci.org/osv/company-web)
+
 Company-web is an alternative emacs plugin for autocompletion in html-mode, web-mode, jade-mode, slim-mode
 and use data of [ac-html](https://github.com/cheunghy/ac-html).
 It uses [company-mode](http://company-mode.github.io).
