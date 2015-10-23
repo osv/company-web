@@ -38,17 +38,6 @@ Feature company-web-html candidate
     And I execute company-web-html candidates command at current point
     Then company-web-html candidates contains "auto"
 
-  Scenario: html attribute value candidates in bigger example
-    Given the buffer is empty
-    When I turn on html-mode
-    And I insert:
-    """
-    <div dir=""
-    """
-    And I press "<left>"
-    And I execute company-web-html candidates command at current point
-    Then company-web-html candidates contains "auto"
-
   Scenario: html attribute style candidates
     Given the buffer is empty
     When I turn on html-mode
@@ -73,6 +62,16 @@ Feature company-web-html candidate
     Then company-web-html candidates contains "animation"
     And company-web-html candidates contains "font"
     And company-web-html candidates not contains "div"
+
+  Scenario: html attribute style candidates usign "'" quote and more attributes
+    Given the buffer is empty
+    When I turn on html-mode
+    And I insert:
+    """
+    <div dir="auto" sty
+    """
+    And I execute company-web-html candidates command at current point
+    Then company-web-html candidates contains "style"
 
   Scenario: html attribute CSS candidates
     Given the buffer is empty

@@ -43,11 +43,13 @@ Feature company-web-jade candidate
     When I turn on jade-mode
     And I insert:
     """
-     div(dir=""
+     div(dir='
     """
-    And I press "<left>"
     And I execute company-web-jade candidates command at current point
     Then company-web-jade candidates contains "auto"
+    And I press "',"
+    And I execute company-web-jade candidates command at current point
+    Then company-web-jade candidates contains "class"
 
   Scenario: jade attribute style candidates
     Given the buffer is empty
