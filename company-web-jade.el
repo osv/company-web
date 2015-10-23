@@ -91,7 +91,7 @@ or
   "A regular expression matching Jade attribute.")
 
 (defconst company-web-jade-value-regexp
-  (concat "\\w *= *[\"]\\(?:[^\"]+[ ]\\|\\)"
+  (concat "\\w *= *[\"]\\(?:[^\"']+[ ]\\|\\)"
           ;; catch value
           "\\([^\"]*\\)")
   "A regular expression matching Jade attribute.")

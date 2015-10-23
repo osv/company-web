@@ -4,6 +4,7 @@
 (package-file "company-web.el")
 
 (development
+ (depends-on "jade-mode")
  (depends-on "ecukes")
  (depends-on "espuds"))
  
