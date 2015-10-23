@@ -1,8 +1,10 @@
 Feature company-web-jade candidate
 
+  Background:
+    Given I turn on jade-mode
+
   Scenario: jade tag candidates
     Given the buffer is empty
-    When I turn on jade-mode
     And I insert:
     """
     t
@@ -18,7 +20,6 @@ Feature company-web-jade candidate
  
   Scenario: jade attribute candidates
     Given the buffer is empty
-    When I turn on jade-mode
     And I insert:
     """
       div(cla
@@ -29,7 +30,6 @@ Feature company-web-jade candidate
 
   Scenario: jade attribute value candidates
     Given the buffer is empty
-    When I turn on jade-mode
     And I insert:
     """
      div(dir=""
@@ -40,7 +40,6 @@ Feature company-web-jade candidate
 
   Scenario: jade attribute value candidates quoted by "'"
     Given the buffer is empty
-    When I turn on jade-mode
     And I insert:
     """
      div(dir='
@@ -53,7 +52,6 @@ Feature company-web-jade candidate
 
   Scenario: jade attribute style candidates
     Given the buffer is empty
-    When I turn on jade-mode
     And I insert:
     """
       div(style=""
@@ -66,7 +64,6 @@ Feature company-web-jade candidate
 
   Scenario: jade attribute CSS candidates
     Given the buffer is empty
-    When I turn on jade-mode
     And I insert:
     """
       div(style="font-family:  ")

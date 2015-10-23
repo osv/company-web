@@ -1,8 +1,9 @@
 Feature company-web-html candidate
+  Background:
+    Given I turn on html-mode
 
   Scenario: html tag candidates
     Given the buffer is empty
-    When I turn on html-mode
     And I insert:
     """
     <t
@@ -18,7 +19,6 @@ Feature company-web-html candidate
  
   Scenario: html attribute candidates
     Given the buffer is empty
-    When I turn on html-mode
     And I insert:
     """
     <div cla
@@ -29,7 +29,6 @@ Feature company-web-html candidate
 
   Scenario: html attribute value candidates
     Given the buffer is empty
-    When I turn on html-mode
     And I insert:
     """
     <div dir=""
@@ -40,7 +39,6 @@ Feature company-web-html candidate
 
   Scenario: html attribute style candidates
     Given the buffer is empty
-    When I turn on html-mode
     And I insert:
     """
     <div style=""
@@ -53,7 +51,6 @@ Feature company-web-html candidate
 
   Scenario: html attribute style candidates usign "'" quote
     Given the buffer is empty
-    When I turn on html-mode
     And I insert:
     """
     <div style='
@@ -65,7 +62,6 @@ Feature company-web-html candidate
 
   Scenario: html attribute style candidates usign "'" quote and more attributes
     Given the buffer is empty
-    When I turn on html-mode
     And I insert:
     """
     <div dir="auto" sty
@@ -75,7 +71,6 @@ Feature company-web-html candidate
 
   Scenario: html attribute CSS candidates
     Given the buffer is empty
-    When I turn on html-mode
     And I insert:
     """
       <div style="font-family:  "
