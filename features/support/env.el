@@ -15,6 +15,7 @@
 (require 'espuds)
 (require 'ert)
 (require 'jade-mode)
+(require 'web-mode)
 (require 'company-web-html)
 (require 'company-web-jade)
 
