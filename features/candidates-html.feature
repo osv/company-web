@@ -62,7 +62,7 @@ Feature company-web-html candidate
     And company-web-html candidates contains "font"
     And company-web-html candidates not contains "div"
 
-  Scenario: html attribute style candidates usign "'"
+  Scenario: html attribute style candidates usign "'" quote
     Given the buffer is empty
     When I turn on html-mode
     And I insert:
