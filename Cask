@@ -6,6 +6,7 @@
 (development
  (depends-on "jade-mode")
  (depends-on "web-mode")
+ (depends-on "slim-mode")
  (depends-on "ecukes")
  (depends-on "espuds"))
  

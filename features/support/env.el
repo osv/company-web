@@ -16,8 +16,10 @@
 (require 'ert)
 (require 'jade-mode)
 (require 'web-mode)
+(require 'slim-mode)
 (require 'company-web-html)
 (require 'company-web-jade)
+(require 'company-web-slim)
 
 (defvar company-cabal-test-prefix-output)
 (defvar company-cabal-test-candidates-output)
