@@ -46,3 +46,16 @@ Feature company-web-html candidate
     Then company-web-html candidates contains "animation"
     And company-web-html candidates contains "font"
     And company-web-html candidates not contains "div"
+
+  Scenario: html attribute CSS candidates
+    Given the buffer is empty
+    When I insert:
+    """
+      <div style="font-family:  "
+    """
+    And I press "<left><left>"
+    And I execute company-web candidates command at current point
+    Then company-web-html candidates contains "Courier"
+    And company-web-html candidates not contains "div"
+    And company-web-html candidates not contains "color"
+    And company-web-html candidates not contains "red"

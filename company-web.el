@@ -230,7 +230,7 @@ DOCUMENTATION is string or function."
   (if (and company-web-complete-css
            (string= attribute "style")
            (save-excursion (re-search-backward "\"" nil t))
-           (save-excursion (re-search-backward "\\_<\\(.+?\\)\\_>\\s *:[^;]*\\=" nil t)))
+           (save-excursion (re-search-backward "\\([[:alpha:]@_-]\\) *:[^;]*\\=" nil t)))
       (-flatten (company-web-make-candidate "CSS" (company-css-property-values
                                                    (company-grab company-css-property-value-regexp 1))))
     (company-web-candidates-attrib-values-internal tag attribute)))
