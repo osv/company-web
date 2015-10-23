@@ -14,7 +14,9 @@
 (require 'company-web)
 (require 'espuds)
 (require 'ert)
+(require 'jade-mode)
 (require 'company-web-html)
+(require 'company-web-jade)
 
 (defvar company-cabal-test-prefix-output)
 (defvar company-cabal-test-candidates-output)
@@ -23,5 +25,4 @@
  (setq company-web-test-prefix-output nil)
  (setq company-web-test-candidates-output nil)
  (switch-to-buffer
-  (get-buffer-create "*company-web*"))
- (html-mode))
+  (get-buffer-create "*company-web*")))

@@ -1,0 +1,93 @@
+Feature company-web-html candidate
+
+  Scenario: html tag candidates
+    Given the buffer is empty
+    When I turn on html-mode
+    And I insert:
+    """
+    <t
+    """
+    And I execute company-web-html candidates command at current point
+    Then company-web-html candidates contains "template"
+    And company-web-html candidates contains "table"
+    And company-web-html candidates not contains "class"
+     
+    When I insert "empl"
+    And I execute company-web-html candidates command at current point
+    Then company-web-html candidates are "("template")"
+ 
+  Scenario: html attribute candidates
+    Given the buffer is empty
+    When I turn on html-mode
+    And I insert:
+    """
+    <div cla
+    """
+    And I execute company-web-html candidates command at current point
+    Then company-web-html candidates are "("class")"
+    And company-web-html candidates not contains "div"
+
+  Scenario: html attribute value candidates
+    Given the buffer is empty
+    When I turn on html-mode
+    And I insert:
+    """
+    <div dir=""
+    """
+    And I press "<left>"
+    And I execute company-web-html candidates command at current point
+    Then company-web-html candidates contains "auto"
+
+  Scenario: html attribute value candidates in bigger example
+    Given the buffer is empty
+    When I turn on html-mode
+    And I insert:
+    """
+    <div dir=""
+    """
+    And I press "<left>"
+    And I execute company-web-html candidates command at current point
+    Then company-web-html candidates contains "auto"
+
+  Scenario: html attribute style candidates
+    Given the buffer is empty
+    When I turn on html-mode
+    And I insert:
+    """
+    <div style=""
+    """
+    And I press "<left>"
+    And I execute company-web-html candidates command at current point
+    Then company-web-html candidates contains "animation"
+    And company-web-html candidates contains "font"
+    And company-web-html candidates not contains "div"
+
+  Scenario: html attribute style candidates usign "'"
+    Given the buffer is empty
+    When I turn on html-mode
+    And I insert:
+    """
+    <div style='
+    """
+    And I execute company-web-html candidates command at current point
+    Then company-web-html candidates contains "animation"
+    And company-web-html candidates contains "font"
+    And company-web-html candidates not contains "div"
+
+  Scenario: html attribute CSS candidates
+    Given the buffer is empty
+    When I turn on html-mode
+    And I insert:
+    """
+      <div style="font-family:  "
+    """
+    And I press "<left><left>"
+    And I execute company-web-html candidates command at current point
+    Then company-web-html candidates contains "Courier"
+    And company-web-html candidates not contains "div"
+    And company-web-html candidates not contains "color"
+    And company-web-html candidates not contains "red"
+
+    And I insert ";"
+    And I execute company-web-html candidates command at current point
+    Then company-web-jade candidates contains "color"

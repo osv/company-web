@@ -1,21 +1,21 @@
-(When "^I execute company-web prefix command at current point$"
+(When "^I execute company-web-html prefix command at current point$"
       (lambda ()
         (setq company-web-test-prefix-output
               (company-web-html 'prefix))))
 
-(When "^I execute company-web post-completion with \"\\(.*\\)\""
+(When "^I execute company-web-html post-completion with \"\\(.*\\)\""
       (lambda (str)
         (company-web-html 'post-completion str)))
 
-(Then "^company-web prefix is\\(?: \"\\(.*\\)\"\\|:\\)$"
+(Then "^company-web-html prefix is\\(?: \"\\(.*\\)\"\\|:\\)$"
       (lambda (expected)
         (should (equal company-web-test-prefix-output expected))))
 
-(Then "^company-web prefix none$"
+(Then "^company-web-html prefix none$"
       (lambda ()
         (should (not company-web-test-prefix-output))))
 
-(When "^I execute company-web candidates command at current point$"
+(When "^I execute company-web-html candidates command at current point$"
       (lambda ()
         (let* ((tmp (or (company-web-html 'prefix) 'stop))
                (prefix (if (consp tmp) (car tmp) tmp)))
