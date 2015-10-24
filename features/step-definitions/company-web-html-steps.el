@@ -32,6 +32,10 @@
       (lambda (expected)
         (should (member expected company-web-test-candidates-output))))
 
+(Then "^company-web-html have no candidates$"
+      (lambda ()
+        (should (equal company-web-test-candidates-output nil))))
+
 (Then "^company-web-html candidates not contains\\(?: \"\\(.*\\)\"\\|:\\)$"
       (lambda (expected)
         (should (not (member expected company-web-test-candidates-output)))))

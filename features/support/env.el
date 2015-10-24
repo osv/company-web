@@ -14,6 +14,7 @@
 (require 'company-web)
 (require 'espuds)
 (require 'ert)
+(require 'emmet-mode)
 (require 'jade-mode)
 (require 'web-mode)
 (require 'slim-mode)
