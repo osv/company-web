@@ -101,8 +101,11 @@ You can add this into your `.emacs`:
 ```
 
 ### Related projects
+
 You may be interested in next projects:
-- [ac-html-bootstrap](https://github.com/osv/ac-html-bootstrap) - Twitter:Bootstrap support for company-web/ac-html.
-- [ac-html-csswatcher](https://github.com/osv/ac-html-csswatcher) - CSS/Less completion support for company-web/ac-html.
-- [ac-html](https://github.com/cheunghy/ac-html) - same as company-web, but `auto-completion` completion framework.
+
+- [ac-html](https://github.com/cheunghy/ac-html) - Same as company-web, but `auto-completion` completion framework used;
+- [ac-html-angular](https://github.com/osv/ac-html-angular) - Angular 1.5 completion data;
+- [ac-html-bootstrap](https://github.com/osv/ac-html-bootstrap) - Twitter:Bootstrap and Font Awesome;
+- [ac-html-csswatcher](https://github.com/osv/ac-html-csswatcher) - Parse your project's CSS/Less and build completion (classes, ids)
 
