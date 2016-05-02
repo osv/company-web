@@ -53,7 +53,7 @@
 (require 'company)
 (require 'company-css)
 (require 'dash)
-(require 'cl)
+(require 'cl-lib)
 
 (defgroup company-web nil
   "HTML Complete, Company back-end."
@@ -128,7 +128,7 @@
   (let ((faces (get-text-property (point) 'face)))
     (if (listp faces)
         ;; slim-mode define list of string-face (bug), so intersect
-        (intersection faces company-web-string-check-faces)
+        (cl-intersection faces company-web-string-check-faces)
       (memq faces company-web-string-check-faces))))
 
 (defun company-web-read-file (file-in-source-dir)
