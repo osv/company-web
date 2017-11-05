@@ -114,14 +114,9 @@
 
 (defun company-web-load-list-from-file (filepath)
   "Return a list separated by \\n from FILEPATH."
-  (with-current-buffer (find-file-noselect filepath)
-    (unwind-protect
-        (split-string (save-restriction
-                        (widen)
-                        (buffer-substring-no-properties
-                         (point-min) (point-max)))
-                      "\n" t)
-      (kill-buffer))))
+  (with-temp-buffer
+    (insert-file-contents filepath)
+    (split-string (buffer-string) "\n" t)))
 
 (defun company-web-is-point-in-string-face ()
   "t if text's face(s) at point is in `company-web-string-check-faces'."
