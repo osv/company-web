@@ -28,6 +28,7 @@ Additionally you may want install `ac-html-csswatcher` and `ac-html-bootstrap`.
 ## Possible improvements of company-mode
 
 ```lisp
+;; (setq company-minimum-prefix-length 0)            ; WARNING, probably you will get perfomance issue if min len is 0!
 (setq company-tooltip-limit 20)                      ; bigger popup window
 (setq company-tooltip-align-annotations 't)          ; align annotations to the right tooltip border
 (setq company-idle-delay .3)                         ; decrease delay before autocompletion popup shows

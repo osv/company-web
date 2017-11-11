@@ -39,3 +39,14 @@
 (Then "^company-web-html candidates not contains\\(?: \"\\(.*\\)\"\\|:\\)$"
       (lambda (expected)
         (should (not (member expected company-web-test-candidates-output)))))
+
+(Then "^company-web-html-current-attribute return\\(?: \"\\(.*\\)\"\\|:\\)$"
+      (lambda (expected)
+        (let* ((tag-info (company-web-html-current-tag))
+               (tag-bound (cdr tag-info))
+               (attribute (company-web-html-current-attribute tag-bound)))
+          (should (equal attribute (read expected))))))
+
+(Then "^company-web-html-current-tag return\\(?: \"\\(.*\\)\"\\|:\\)$"
+      (lambda (expected)
+        (should (equal (car (company-web-html-current-tag)) (read expected)))))
