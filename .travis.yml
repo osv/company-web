@@ -4,6 +4,10 @@ cache:
   - directories:
       # Cache stable Emacs binaries (saves 1min per job)
       - "$HOME/emacs/"
+      # Cache dependencies
+      - ".cask/"
+      # Cache Cask bootstrap dependencies
+      - "$HOME/.emacs.d/.cask"
 # Allow Emacs snapshot builds to fail and don’t wait for these as they can take
 # a looooong time
 matrix:
@@ -15,15 +19,11 @@ env:
   - EMACS_VERSION=25.2
   - EMACS_VERSION=snapshot
 before_install:
-  # Configure $PATH: Executables are installed to $HOME/bin
   - export PATH="$HOME/bin:$PATH"
-  # Download the makefile to emacs-travis.mk
   - wget 'https://raw.githubusercontent.com/flycheck/emacs-travis/master/emacs-travis.mk'
-  # Install Emacs (according to $EMACS_VERSION) and Cask
   - make -f emacs-travis.mk install_emacs
   - make -f emacs-travis.mk install_cask
 install:
-  # Install your dependencies
   - cask install
 script:
   make

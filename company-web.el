@@ -3,7 +3,7 @@
 ;; Copyright (C) 2015 Olexandr Sydorchuk
 
 ;; Author: Olexandr Sydorchuk <olexandr.syd@gmail.com>
-;; Version: 1.0
+;; Version: 2.0
 ;; Keywords: html, company
 ;; Package-Requires: ((company "0.8.0") (dash "2.8.0") (cl-lib "0.5.0") (web-completion-data "0.1.0"))
 ;; URL: https://github.com/osv/company-web
