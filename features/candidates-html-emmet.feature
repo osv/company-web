@@ -51,7 +51,7 @@ Feature company-web-html and emmet integration
     Then company-web-html candidates contains "ltr"
     Then company-web-html candidates not contains "div"
 
-  Scenario: [emmet-mode] value candidates if only emmet in buffer
+  Scenario: [emmet-mode] value candidates if only emmet in buffer and quote is open
     Given the buffer is empty
     And I insert:
     """

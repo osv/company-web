@@ -30,7 +30,7 @@ Feature company-web-html candidate
     Then company-web-html candidates are "("class")"
     And company-web-html candidates not contains "div"
 
-  Scenario: [html-mode] second attribute's candidates
+  Scenario: [html-mode] second attribute candidate
     Given the buffer is empty
     And I insert:
     """
