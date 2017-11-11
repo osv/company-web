@@ -25,6 +25,19 @@ Feature company-web-html and emmet integration
     Then company-web-html candidates contains "action"
     Then company-web-html candidates not contains "div"
 
+  Scenario: [emmet-mode] second attribute candidates
+    Given the buffer is empty
+    And I insert:
+    """
+    <foo bar>
+      form.form-inline[action="/api/foo"method=""
+    """
+    And I press "<left>"
+    And I execute company-web-html candidates command at current point
+    Then company-web-html candidates contains "POST"
+    Then company-web-html candidates not contains "action"
+    Then company-web-html candidates not contains "div"
+
   # TODO: Improve tag detect regexp to allow whitespace between [ ]
   # Scenario: emmet: two attributes
   #   Given the buffer is empty
