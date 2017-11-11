@@ -3,7 +3,7 @@ Feature company-web-slim candidate
   Background:
     Given I turn on slim-mode
 
-  Scenario: slim tag candidates
+  Scenario: [slim-mode] tag candidates
     Given the buffer is empty
     And I insert:
     """
@@ -18,7 +18,7 @@ Feature company-web-slim candidate
     And I execute company-web-slim candidates command at current point
     Then company-web-slim candidates are "("template")"
  
-  Scenario: slim attribute candidates
+  Scenario: [slim-mode] attribute candidates
     Given the buffer is empty
     And I insert:
     """
@@ -28,7 +28,7 @@ Feature company-web-slim candidate
     Then company-web-slim candidates are "("class")"
     And company-web-slim candidates not contains "div"
 
-  Scenario: slim attribute value candidates
+  Scenario: [slim-mode] attribute value candidates
     Given the buffer is empty
     And I insert:
     """
@@ -38,7 +38,7 @@ Feature company-web-slim candidate
     And I execute company-web-slim candidates command at current point
     Then company-web-slim candidates contains "auto"
 
-  Scenario: slim attribute style candidates
+  Scenario: [slim-mode] attribute style candidates
     Given the buffer is empty
     And I insert:
     """
@@ -50,7 +50,7 @@ Feature company-web-slim candidate
     And company-web-slim candidates contains "font"
     And company-web-slim candidates not contains "div"
 
-  Scenario: slim multiple attributes
+  Scenario: [slim-mode] multiple attributes
     Given the buffer is empty
     And I insert:
     """
@@ -61,7 +61,7 @@ Feature company-web-slim candidate
     And company-web-slim candidates not contains "color"
     And company-web-slim candidates not contains "canvas"
 
-  Scenario: slim attribute CSS candidates
+  Scenario: [slim-mode] attribute CSS candidates
     Given the buffer is empty
     And I insert:
     """
@@ -77,4 +77,4 @@ Feature company-web-slim candidate
     And I insert "; "
     And I execute company-web-slim candidates command at current point
     Then company-web-slim candidates contains "color"
-"
+

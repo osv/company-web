@@ -3,7 +3,7 @@ Feature company-web-jade candidate
   Background:
     Given I turn on jade-mode
 
-  Scenario: jade tag candidates
+  Scenario: [jade-mode] tag candidates
     Given the buffer is empty
     And I insert:
     """
@@ -18,7 +18,7 @@ Feature company-web-jade candidate
     And I execute company-web-jade candidates command at current point
     Then company-web-jade candidates are "("template")"
  
-  Scenario: jade attribute candidates
+  Scenario: [jade-mode] attribute candidates
     Given the buffer is empty
     And I insert:
     """
@@ -28,7 +28,7 @@ Feature company-web-jade candidate
     Then company-web-jade candidates are "("class")"
     And company-web-jade candidates not contains "div"
 
-  Scenario: jade attribute value candidates
+  Scenario: [jade-mode] attribute value candidates
     Given the buffer is empty
     And I insert:
     """
@@ -38,7 +38,7 @@ Feature company-web-jade candidate
     And I execute company-web-jade candidates command at current point
     Then company-web-jade candidates contains "auto"
 
-  Scenario: jade attribute value candidates quoted by "'"
+  Scenario: [jade-mode] attribute value candidates quoted by "'"
     Given the buffer is empty
     And I insert:
     """
@@ -50,7 +50,7 @@ Feature company-web-jade candidate
     And I execute company-web-jade candidates command at current point
     Then company-web-jade candidates contains "class"
 
-  Scenario: jade attribute style candidates
+  Scenario: [jade-mode] attribute style candidates
     Given the buffer is empty
     And I insert:
     """
@@ -62,7 +62,7 @@ Feature company-web-jade candidate
     And company-web-jade candidates contains "font"
     And company-web-jade candidates not contains "div"
 
-  Scenario: jade attribute CSS candidates
+  Scenario: [jade-mode] attribute CSS candidates
     Given the buffer is empty
     And I insert:
     """

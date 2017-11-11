@@ -47,24 +47,30 @@ You may want disable it when you remap emmet-mode key map and change RET behavio
 
 ;; html grabs
 (defconst company-web-html-get-tag-re
-  (concat "<[[:space:]]*\\(" company-web-selector "+\\)[[:space:]]+")
+  (concat "<[[:space:]]*\\(" company-web-selector "+\\)[[:space:]]")
   "Regexp of html tag")
 
 (defconst company-web-html-get-attribute-re
-  (concat "[^[:alnum:]-]\\(" company-web-selector "+\\)=")
+  (concat "<[[:space:]]*\\(" company-web-selector "+\\)[^>]*"
+          "[^[:alnum:]>_-]\\(" company-web-selector "+\\)=")
   "Regexp of html attribute")
 
 (defun company-web-html-current-tag ()
   "Return current html tag user is typing on."
-  (save-excursion
-    (re-search-backward company-web-html-get-tag-re nil t)
-    (match-string 1)))
+  (let ((bound (save-excursion
+                 (if (re-search-backward ">" (company-web-backward-min-tag-bound) t)
+                     (point)
+                   (company-web-backward-min-tag-bound)))))
+    (save-excursion
+      (if (re-search-backward company-web-html-get-tag-re bound t)
+          (cons (match-string-no-properties 1) (point))
+        (cons nil (point))))))
 
-(defun company-web-html-current-attribute ()
+(defun company-web-html-current-attribute (bound)
   "Return current html tag's attribute user is typing on."
   (save-excursion
-    (re-search-backward company-web-html-get-attribute-re nil t)
-    (match-string 1)))
+    (re-search-backward company-web-html-get-attribute-re bound t)
+    (match-string-no-properties 2)))
 
 (defconst company-web-html-tag-regexp
   (concat "<[[:space:]]*\\("
@@ -77,9 +83,15 @@ You may want disable it when you remap emmet-mode key map and change RET behavio
   "A regular expression matching HTML attribute.")
 
 (defconst company-web-html-value-regexp
-  (concat "<[^>]+\\w=[\"']\\(?:[^\"']+[ ;:]\\|\\)"
+  (concat "\\w=[\"']\\(?:[^\"']+[ ;:]\\|\\)"
           ;; catch value
           "\\([^\"']*\\)")
+  "A regular expression matching HTML attribute.")
+
+(defconst company-web-html-value-regexp
+  (concat "\\w=[\"']\\(?:[^\"']+[ ;:]\\|[ ]*\\)"
+          ;; catch value
+          "\\([add-log-iso8601-time-zone]*\\)")
   "A regular expression matching HTML attribute.")
 
 ;; emmet grabs
@@ -150,44 +162,54 @@ You may want disable it when you remap emmet-mode key map and change RET behavio
   "A regular expression matching emmet's value name.")
 
 (defun company-web-html-emmet-grab ()
-  (and company-web-html-emmet-enable
-       (bound-and-true-p emmet-mode)
-       (or
-        (company-grab company-web-html-emmet-tag-regexp 1)
-        (company-grab company-web-html-emmet-class-regexp 2)
-        (company-grab company-web-html-emmet-id-regexp 2)
-        (company-grab company-web-html-emmet-attr-regexp 2)
-        (company-grab company-web-html-emmet-value-regexp 3))))
+  (let* ((limit (company-web-backward-min-tag-bound))
+         (bound (save-excursion
+                  (if (re-search-backward ">" limit t)
+                      (point)
+                    limit))))
+    (and company-web-html-emmet-enable
+         (bound-and-true-p emmet-mode)
+         (or
+          (company-grab company-web-html-emmet-tag-regexp 1 bound)
+          (company-grab company-web-html-emmet-class-regexp 2 bound)
+          (company-grab company-web-html-emmet-id-regexp 2 bound)
+          (company-grab company-web-html-emmet-attr-regexp 2 bound)
+          (company-grab company-web-html-emmet-value-regexp 3 bound)))))
 
 (defun company-web-html-emmet-candidates()
   (when (and company-web-html-emmet-enable
              (bound-and-true-p emmet-mode))
-    (cond
-     ((company-grab company-web-html-emmet-tag-regexp 1)
-      (all-completions arg (company-web-candidates-tags)))
-     ;; class (default for div tag)
-     ((company-grab company-web-html-emmet-class-regexp 2)
-      (let ((tag (company-grab company-web-html-emmet-class-regexp 1)))
-        (if (string= "" tag)
-            (setq tag "div"))
-        (all-completions arg (company-web-candidates-attrib-values tag "class"))))
-     ;; id (default for div tag)
-     ((company-grab company-web-html-emmet-id-regexp 2)
-      (let ((tag (company-grab company-web-html-emmet-id-regexp 1)))
-        (if (string= "" tag)
-            (setq tag "div"))
-        (all-completions arg (company-web-candidates-attrib-values tag "id"))))
-     ;; attributes (default for div)
-     ((company-grab company-web-html-emmet-attr-regexp 2)
-      (let ((tag (company-grab company-web-html-emmet-attr-regexp 1)))
-        (if (string= "" tag)
-            (setq tag "div"))
-        (all-completions arg (company-web-candidates-attribute tag))))
-     ;; attribute values
-     ((company-grab company-web-html-emmet-value-regexp 3)
-      (let ((tag (company-grab company-web-html-emmet-value-regexp 1))
-            (attribute (company-grab company-web-html-emmet-value-regexp 2)))
-        (all-completions arg (company-web-candidates-attrib-values tag attribute)))))))
+    (let* ((limit (company-web-backward-min-tag-bound))
+           (bound (save-excursion
+                    (if (re-search-backward ">" limit t)
+                        (point)
+                      limit))))
+      (cond
+       ((company-grab company-web-html-emmet-tag-regexp 1 bound)
+        (all-completions arg (company-web-candidates-tags)))
+       ;; class (default for div tag)
+       ((company-grab company-web-html-emmet-class-regexp 2 bound)
+        (let ((tag (company-grab company-web-html-emmet-class-regexp 1 bound)))
+          (if (string= "" tag)
+              (setq tag "div"))
+          (all-completions arg (company-web-candidates-attrib-values tag "class" bound))))
+       ;; id (default for div tag)
+       ((company-grab company-web-html-emmet-id-regexp 2 bound)
+        (let ((tag (company-grab company-web-html-emmet-id-regexp 1 bound)))
+          (if (string= "" tag)
+              (setq tag "div"))
+          (all-completions arg (company-web-candidates-attrib-values tag "id" bound))))
+       ;; attributes (default for div)
+       ((company-grab company-web-html-emmet-attr-regexp 2 bound)
+        (let ((tag (company-grab company-web-html-emmet-attr-regexp 1 bound)))
+          (if (string= "" tag)
+              (setq tag "div"))
+          (all-completions arg (company-web-candidates-attribute tag))))
+       ;; attribute values
+       ((company-grab company-web-html-emmet-value-regexp 3 bound)
+        (let ((tag (company-grab company-web-html-emmet-value-regexp 1 bound))
+              (attribute (company-grab company-web-html-emmet-value-regexp 2 bound)))
+          (all-completions arg (company-web-candidates-attrib-values tag attribute bound))))))))
 
 (defadvice emmet-preview-accept (around emmet-with-company-accept)
   "First call `company-complete-selection' if visible company popup."
@@ -206,33 +228,48 @@ You may want disable it when you remap emmet-mode key map and change RET behavio
     ad-do-it))
 
 (defun company-web-html-emmet-doc (arg)
-  (when (and company-web-html-emmet-enable
-             (bound-and-true-p emmet-mode))
-    (cond
-     ((company-grab company-web-html-emmet-tag-regexp 1)
-      (company-web-tag-doc arg))
-     ;; class (default for div tag)
-     ((company-grab company-web-html-emmet-class-regexp 2)
-      (let ((tag (company-grab company-web-html-emmet-class-regexp 1)))
-        (if (string= "" tag)
-            (setq tag "div"))
-        (company-web-attribute-doc tag arg)))
-     ;; id (default for div tag)
-     ((company-grab company-web-html-emmet-id-regexp 2)
-      (let ((tag (company-grab company-web-html-emmet-id-regexp 1)))
-        (if (string= "" tag)
-            (setq tag "div"))
-        (company-web-attribute-doc tag arg)))
-     ;; attributes (default for div)
-     ((company-grab company-web-html-emmet-attr-regexp 2)
-      (let ((tag (company-grab company-web-html-emmet-attr-regexp 1)))
-        (if (string= "" tag)
-            (setq tag "div"))
-        (company-web-attribute-doc tag arg)))
-     ((company-grab company-web-html-emmet-value-regexp 3)
-      (let ((tag (company-grab company-web-html-emmet-value-regexp 1))
-            (attribute (company-grab company-web-html-emmet-value-regexp 2)))
-        (company-web-attribute-doc tag arg))))))
+  (let* ((limit (company-web-backward-min-tag-bound))
+         (bound (save-excursion
+                  (if (re-search-backward ">" limit t)
+                      (point)
+                    limit))))
+    (when (and company-web-html-emmet-enable
+               (bound-and-true-p emmet-mode))
+      (cond
+       ((company-grab company-web-html-emmet-tag-regexp 1 bound)
+        (company-web-tag-doc arg))
+       ;; class (default for div tag)
+       ((company-grab company-web-html-emmet-class-regexp 2 bound)
+        (let ((tag (company-grab company-web-html-emmet-class-regexp 1 bound)))
+          (if (string= "" tag)
+              (setq tag "div"))
+          (company-web-attribute-doc tag arg)))
+       ;; id (default for div tag)
+       ((company-grab company-web-html-emmet-id-regexp 2 bound)
+        (let ((tag (company-grab company-web-html-emmet-id-regexp 1 bound)))
+          (if (string= "" tag)
+              (setq tag "div"))
+          (company-web-attribute-doc tag arg)))
+       ;; attributes (default for div)
+       ((company-grab company-web-html-emmet-attr-regexp 2 bound)
+        (let ((tag (company-grab company-web-html-emmet-attr-regexp 1 bound)))
+          (if (string= "" tag)
+              (setq tag "div"))
+          (company-web-attribute-doc tag arg)))
+       ((company-grab company-web-html-emmet-value-regexp 3 bound)
+        (let ((tag (company-grab company-web-html-emmet-value-regexp 1 bound))
+              (attribute (company-grab company-web-html-emmet-value-regexp 2 bound)))
+          (company-web-attribute-doc tag arg)))))))
+
+(defun company-web-html-prefix-tag ()
+  (company-web-grab-not-in-string company-web-html-tag-regexp 1 (company-web-backward-min-tag-bound)))
+
+(defun company-web-html-prefix-attribute (bound)
+  (company-web-grab-not-in-string company-web-html-attribute-regexp 1 bound))
+
+(defun company-web-html-prefix-value (bound)
+  (when (looking-back company-web-html-value-regexp bound)
+    (match-string-no-properties 1)))
 
 ;;;###autoload
 (defun company-web-html (command &optional arg &rest ignored)
@@ -242,41 +279,59 @@ You may want disable it when you remap emmet-mode key map and change RET behavio
     (interactive (company-begin-backend 'company-web-html))
     (ignore-case t)
     (duplicates nil)
+
     (prefix (and (or (derived-mode-p 'html-mode)
                      (derived-mode-p 'web-mode))
-                 (or (company-grab company-web-html-value-regexp 1)
-                     (company-grab company-web-html-tag-regexp 1)
-                     (company-grab company-web-html-attribute-regexp 1)
-                     (company-web-html-emmet-grab)
-                     )))
+                 (let* ((tag-info (company-web-html-current-tag))
+                        (tag (car tag-info))
+                        (tag-bound (cdr tag-info)))
+                   (or (and tag (company-web-html-prefix-value tag-bound))
+                       (and tag (company-web-html-prefix-attribute tag-bound))
+                       (company-web-html-prefix-tag)
+                       (company-web-html-emmet-grab)
+                       ))))
+
     (candidates
-     (cond
-      ;; value
-      ((company-grab company-web-html-value-regexp 1)
-       (all-completions arg (company-web-candidates-attrib-values (company-web-html-current-tag)
-                                                                  (company-web-html-current-attribute))))
-      ;; tag
-      ((company-web-grab-not-in-string company-web-html-tag-regexp 1)
-       (all-completions arg (company-web-candidates-tags)))
-      ;; attr
-      ((company-web-grab-not-in-string company-web-html-attribute-regexp 1)
-       (all-completions arg (company-web-candidates-attribute (company-web-html-current-tag))))
-      ;; emmet
-      ((company-web-html-emmet-grab)
-       (company-web-html-emmet-candidates))))
+     (let* ((tag-info (company-web-html-current-tag))
+            (tag (car tag-info))
+            (tag-bound (cdr tag-info)))
+       (cond
+        ;; value
+        ((and tag (company-web-html-prefix-value tag-bound))
+         (all-completions arg (company-web-candidates-attrib-values tag
+                                                                    (company-web-html-current-attribute tag-bound) tag-bound)))
+        ;; attr
+        ((and tag (company-web-html-prefix-attribute tag-bound))
+         (all-completions arg (company-web-candidates-attribute tag)))
+        ;; tag
+        ((company-web-html-prefix-tag)
+         (all-completions arg (company-web-candidates-tags)))
+        ;; emmet
+        ((company-web-html-emmet-grab)
+         (company-web-html-emmet-candidates))
+        )))
+
     (annotation (company-web-annotation arg))
+
     (doc-buffer
      ;; No need grab for attribute value, attribute regexp will match enyway
-     (cond
-      ;; tag
-      ((company-grab company-web-html-tag-regexp 1)
-       (company-web-tag-doc arg))
-      ;; attr
-      ((company-grab company-web-html-attribute-regexp 1)
-       (company-web-attribute-doc (company-web-html-current-tag) arg))
-      ;; emmet
-      ((company-web-html-emmet-grab)
-       (company-web-html-emmet-doc arg))))))
+     (let* ((tag-info (company-web-html-current-tag))
+            (tag (car tag-info))
+            (tag-bound (cdr tag-info)))
+       (cond
+        ;; value
+        ((and tag (company-web-html-prefix-value tag-bound))
+         (company-web-candidate-prop-doc arg))
+        ;; attr
+        ((and tag (company-web-html-prefix-attribute tag-bound))
+         (company-web-attribute-doc tag arg))
+        ;; tag
+        ((company-web-html-prefix-tag)
+         (company-web-tag-doc arg))
+        ;; emmet
+        ((company-web-html-emmet-grab)
+         (company-web-html-emmet-doc arg))
+        )))))
 
 (provide 'company-web-html)
 ;;; company-web-html.el ends here

@@ -70,6 +70,14 @@
   :group 'company-web
   :type 'boolean)
 
+(defcustom company-web-backward-tag-limit 2048
+  "Bound for backward searching to determinate where html tag is started. Big value may decrease perfomance"
+  :group 'company-web :type 'integer)
+
+(defun company-web-backward-min-tag-bound ()
+  (max (- (point) company-web-backward-tag-limit)
+       (point-min)))
+
 (defface company-web-doc-base-face
   '((((class color) (background light))
      :foreground "navy" :inherit variable-pitch)
@@ -222,13 +230,13 @@ DOCUMENTATION is string or function."
                          (company-web-all-files-named (concat "html-attributes-complete/global-" attribute))))
     (-flatten items)))
 
-(defun company-web-candidates-attrib-values (tag attribute)
+(defun company-web-candidates-attrib-values (tag attribute bound)
   (if (and company-web-complete-css
            (string= attribute "style")
-           (save-excursion (re-search-backward "[\"']" nil t))
-           (save-excursion (re-search-backward "\\([[:alpha:]@_-]\\) *:[^;]*\\=" nil t)))
+           (save-excursion (re-search-backward "[\"']" bound t))
+           (save-excursion (re-search-backward "\\([[:alpha:]@_-]\\) *:[^;]*\\=" bound t)))
       (-flatten (company-web-make-candidate "CSS" (company-css-property-values
-                                                   (company-grab company-css-property-value-regexp 1))))
+                                                   (company-grab company-css-property-value-regexp 1 bound))))
     (company-web-candidates-attrib-values-internal tag attribute)))
 
 (defun company-web-annotation (candidate)
@@ -292,10 +300,10 @@ Property of doc CANDIDATE or load file from `html-attributes-short-docs/global-C
     (when doc
       (company-web-doc-buffer doc))))
 
-(defun company-web-grab-not-in-string (regexp expression)
+(defun company-web-grab-not-in-string (regexp expression bound)
   "Like `company-grab' but not in string"
   (and (not (company-web-is-point-in-string-face))
-       (company-grab regexp expression)))
+       (company-grab regexp expression bound)))
 
 (defconst company-web-selector "[[:alnum:]_-]"
   "Regexp of html attribute or tag")
