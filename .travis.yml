@@ -1,17 +1,9 @@
 language: emacs-lisp
-env:
-  matrix:
-    - EMACS_VERSION=24.5
-    - EMACS_VERSION=snapshot
+sudo: false
 cache:
   - directories:
-      # Cache stable Emacs binaries
+      # Cache stable Emacs binaries (saves 1min per job)
       - "$HOME/emacs/"
-      # Cache dependencies
-      - ".cask/"
-      # Cache Cask bootstrap dependencies
-      - "$HOME/.emacs.d/.cask"
-
 # Allow Emacs snapshot builds to fail and don’t wait for these as they can take
 # a looooong time
 matrix:
@@ -19,9 +11,7 @@ matrix:
   allow_failures:
     - env: EMACS_VERSION=snapshot
 env:
-  - EMACS_VERSION=24.3
   - EMACS_VERSION=24.5
-  - EMACS_VERSION=25.1
   - EMACS_VERSION=25.2
   - EMACS_VERSION=snapshot
 before_install:
