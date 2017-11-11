@@ -1,7 +1,8 @@
 language: emacs-lisp
 env:
   matrix:
-    - EMACS=emacs25
+    - EMACS_VERSION=24.5
+    - EMACS_VERSION=snapshot
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -y $EMACS
