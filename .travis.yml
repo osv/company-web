@@ -1,13 +1,29 @@
 language: emacs-lisp
+sudo: false
+cache:
+  - directories:
+      # Cache stable Emacs binaries (saves 1min per job)
+      - "$HOME/emacs/"
+      # Cache dependencies
+      - ".cask/"
+      # Cache Cask bootstrap dependencies
+      - "$HOME/.emacs.d/.cask"
+# Allow Emacs snapshot builds to fail and don’t wait for these as they can take
+# a looooong time
+matrix:
+  fast_finish: true
+  allow_failures:
+    - env: EMACS_VERSION=snapshot
 env:
-  matrix:
-    - EMACS=emacs24
+  - EMACS_VERSION=24.5
+  - EMACS_VERSION=25.2
+  - EMACS_VERSION=snapshot
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -y $EMACS
-  - curl -fsSkL https://raw.github.com/cask/cask/master/go | python
-  - export PATH="$HOME/.cask/bin:$PATH"
-  - export ECUKES_EMACS="$EMACS"
-  - cask
+  - export PATH="$HOME/bin:$PATH"
+  - wget 'https://raw.githubusercontent.com/flycheck/emacs-travis/master/emacs-travis.mk'
+  - make -f emacs-travis.mk install_emacs
+  - make -f emacs-travis.mk install_cask
+install:
+  - cask install
 script:
   make

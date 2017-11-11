@@ -5,6 +5,7 @@
 
 (development
  (depends-on "jade-mode")
+ (depends-on "pug-mode")
  (depends-on "web-mode")
  (depends-on "slim-mode")
  (depends-on "emmet-mode")

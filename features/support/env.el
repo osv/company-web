@@ -16,6 +16,7 @@
 (require 'ert)
 (require 'emmet-mode)
 (require 'jade-mode)
+(require 'pug-mode)
 (require 'web-mode)
 (require 'slim-mode)
 (require 'company-web-html)
