@@ -258,7 +258,7 @@ DOCUMENTATION is string or function."
 (defun company-web-doc-buffer (&optional string)
   (with-current-buffer (get-buffer-create "*html-documentation*")
     (set (make-local-variable 'font-lock-defaults)
-	 '(company-web-doc-font-lock-keywords))
+         '(company-web-doc-font-lock-keywords))
     (font-lock-mode t)
     (erase-buffer)
     (when string

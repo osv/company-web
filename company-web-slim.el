@@ -110,11 +110,11 @@ or
     (duplicates nil)
     (prefix (let ((bound (company-web-backward-min-tag-bound)))
               (and (derived-mode-p 'slim-mode)
-                 (or (company-grab company-web-slim-value-regexp 1 bound)
-                     (company-grab company-web-slim-tag-regexp 1 bound)
-                     (company-grab company-web-slim-id-regexp 2 bound)
-                     (company-grab company-web-slim-class-regexp 2 bound)
-                     (company-grab company-web-slim-attribute-regexp 1 bound)))))
+                   (or (company-grab company-web-slim-value-regexp 1 bound)
+                       (company-grab company-web-slim-tag-regexp 1 bound)
+                       (company-grab company-web-slim-id-regexp 2 bound)
+                       (company-grab company-web-slim-class-regexp 2 bound)
+                       (company-grab company-web-slim-attribute-regexp 1 bound)))))
 
     (candidates
      (let ((bound (company-web-backward-min-tag-bound)))
