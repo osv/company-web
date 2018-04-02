@@ -13,11 +13,11 @@ Feature company-web-jade candidate
     Then company-web-jade candidates contains "template"
     And company-web-jade candidates contains "table"
     And company-web-jade candidates not contains "class"
-     
+
     When I insert "empl"
     And I execute company-web-jade candidates command at current point
     Then company-web-jade candidates are "("template")"
- 
+
   Scenario: [jade-mode] attribute candidates
     Given the buffer is empty
     And I insert:
@@ -78,3 +78,17 @@ Feature company-web-jade candidate
     And I insert "; "
     And I execute company-web-jade candidates command at current point
     Then company-web-jade candidates contains "color"
+
+  Scenario: [jade-mode] complete style candidates when last char is '-'
+    Given the buffer is empty
+    And I insert:
+    """
+      div(style="font-")
+    """
+    And I press "<left><left>"
+    And I execute company-web-jade candidates command at current point
+    Then company-web-jade candidates contains "font-family"
+    And company-web-jade candidates not contains "font"
+    And company-web-jade candidates not contains "div"
+    And company-web-jade candidates not contains "color"
+    And company-web-jade candidates not contains "red"

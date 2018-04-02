@@ -88,18 +88,12 @@ You may want disable it when you remap emmet-mode key map and change RET behavio
           "\\([^\"']*\\)")
   "A regular expression matching HTML attribute.")
 
-(defconst company-web-html-value-regexp
-  (concat "\\w=[\"']\\(?:[^\"']+[ ;:]\\|[ ]*\\)"
-          ;; catch value
-          "\\([add-log-iso8601-time-zone]*\\)")
-  "A regular expression matching HTML attribute.")
-
 ;; emmet grabs
 (defconst company-web-html-emmet-tag-separator
   "\\(?:^\\|[\t( +>]+\\)")
 
 (defconst company-web-html-emmet-tag-regexp
-  (concat company-web-html-emmet-tag-separator 
+  (concat company-web-html-emmet-tag-separator
           "\\(" company-web-selector "*\\)")
   "A regular expression matching emmet's tags.")
 
