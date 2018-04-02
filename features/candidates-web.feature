@@ -13,11 +13,11 @@ Feature company-web-html candidate Background:
     Then company-web-html candidates contains "template"
     And company-web-html candidates contains "table"
     And company-web-html candidates not contains "class"
-     
+
     When I insert "empl"
     And I execute company-web-html candidates command at current point
     Then company-web-html candidates are "("template")"
- 
+
   Scenario: [web-mode] attribute candidates
     Given the buffer is empty
     And I insert:
@@ -99,6 +99,22 @@ Feature company-web-html candidate Background:
     """
     And I execute company-web-html candidates command at current point
     Then company-web-html candidates contains "style"
+
+  Scenario: [web-mode] Complete style candidates when last char is '-'
+    Given the buffer is empty
+    And I insert:
+    """
+      <div class="xyz" style="font-"
+    """
+    And I press "<left>"
+    And company-web-html-current-tag return ""div""
+    And company-web-html-current-attribute return ""style""
+    And I execute company-web-html candidates command at current point
+    Then company-web-html candidates contains "font-family"
+    And company-web-html candidates not contains "font"
+    And company-web-html candidates not contains "div"
+    And company-web-html candidates not contains "color"
+    And company-web-html candidates not contains "red"
 
   Scenario: [web-mode] Complete CSS candidates
     Given the buffer is empty

@@ -3,7 +3,7 @@
 ;; Copyright (C) 2015 Olexandr Sydorchuk
 
 ;; Author: Olexandr Sydorchuk <olexandr.syd@gmail.com>
-;; Version: 2.0
+;; Version: 2.1
 ;; Keywords: html, company
 ;; Package-Requires: ((company "0.8.0") (dash "2.8.0") (cl-lib "0.5.0") (web-completion-data "0.1.0"))
 ;; URL: https://github.com/osv/company-web
@@ -172,7 +172,7 @@ Returns an alist. car is source name, cdr is the file path."
 
 FRAMEWORK-NAME will be truncated to `companu-html-framework-name-truncate-length'.
 
-ITEMS is a list of string where name and documentation are 
+ITEMS is a list of string where name and documentation are
 separated by one space.
 Documentation newlines are escaped by \"\\n\".
 
@@ -266,7 +266,7 @@ DOCUMENTATION is string or function."
         (insert string)))
     (current-buffer)))
 
-;; end 
+;; end
 
 (defun company-web-candidate-prop-doc (candidate)
   "Return documentation for chosen CANDIDATE.
