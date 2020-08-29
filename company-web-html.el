@@ -32,11 +32,6 @@
   :group 'company-web
   :type 'boolean)
 
-(defcustom company-web-html-emmet-enable t
-  "Enable emmet specified completion when `emmet-mode' active."
-  :group 'company-web
-  :type 'boolean)
-
 (defcustom company-web-html-emmet-preview-enable-advice t
   "Enable advice for `emmet-preview-accept'. This advice check for visibility of company popup
 and call `company-complete-selection' if so.
